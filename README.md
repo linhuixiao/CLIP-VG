@@ -1,2 +1,2 @@
 # CLIP-VG
-CLIP for Visual Grounding
+CLIP for Visual Grounding. Code and models will be released soon...
