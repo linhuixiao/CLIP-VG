@@ -1,6 +1,8 @@
 # CLIP-VG: Self-paced Curriculum Adapting of CLIP for Visual Grounding
 <p align="center"> <img src='docs/model.jpg' align="center" width="70%"> </p>
-CLIP for Visual Grounding. This repository is the official Pytorch implementation for the paper [**CLIP-VG: Self-paced Curriculum Adapting of CLIP 
+CLIP for Visual Grounding.
+
+This repository is the official Pytorch implementation for the paper [**CLIP-VG: Self-paced Curriculum Adapting of CLIP 
 for Visual Grounding**](https://arxiv.org/abs/2305.08685). 
 (Primary Contact: [Linhui Xiao](https://github.com/linhuixiao))
 
@@ -18,7 +20,7 @@ Links: <a href="https://arxiv.org/abs/2305.08685">arXiv</a>
 - **Self-paced Curriculum Adapting Algorithm.** A plugin-like algorithmic idea that can be applied to any pseudo-label scenario.
 
 ## Update
-- Completely code and models will be released soon...
+- The code and models will be released soon ...
 
 
 ## TODO
