@@ -13,7 +13,7 @@ Links: <a href="https://ieeexplore.ieee.org/abstract/document/10269126">TMM</a>,
 
 **Please leave a <font color='orange'>STAR ⭐</font> if you like this project!**
 
-##News
+## News
 - Update on 2023/05/18: Release the repository and training code.
 - Update on 2023/9/25: Our paper has been accepted by the top journal IEEE Transaction on Multimedia (2023)!.
 
@@ -122,8 +122,9 @@ If you find our work helpful for your research, please consider citing the follo
 @article{xiao2023clip,
   title={CLIP-VG: Self-paced Curriculum Adapting of CLIP for Visual Grounding},
   author={Xiao, Linhui and Yang, Xiaoshan and Peng, Fang and Yan, Ming and Wang, Yaowei and Xu, Changsheng},
-  journal={arXiv preprint arXiv:2305.08685},
-  year={2023}
+  journal={IEEE Transactions on Multimedia},
+  year={2023},
+  publisher={IEEE}
 }
 ```
 
