@@ -3,16 +3,19 @@
 CLIP for Visual Grounding.
 
 This repository is the official Pytorch implementation for the paper [**CLIP-VG: Self-paced Curriculum Adapting of CLIP 
-for Visual Grounding**](https://arxiv.org/abs/2305.08685). 
+for Visual Grounding**](https://ieeexplore.ieee.org/abstract/document/10269126). 
 (Primary Contact: [Linhui Xiao](https://github.com/linhuixiao))
 
 
 <h3 align="left">
-Links: <a href="https://arxiv.org/abs/2305.08685">arXiv</a> 
+Links: <a href="https://ieeexplore.ieee.org/abstract/document/10269126">TMM</a>,  <a href="https://arxiv.org/abs/2305.08685">ArXiv</a>
 </h3>
 
 **Please leave a <font color='orange'>STAR ⭐</font> if you like this project!**
 
+##News
+- Update on 2023/05/18: Release the repository and training code.
+- Update on 2023/9/25: Our paper has been accepted by the top journal IEEE Transaction on Multimedia (2023)!.
 
 ## Highlight
 - **CLIP for Visual Grounding.** a state-of-the-art baseline for unsupervised and fully supervised visual grounding.
