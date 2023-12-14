@@ -108,22 +108,16 @@ def trans_vg_loss(batch_pred, batch_target):
     """Compute the losses related to the bounding boxes, 
        including the L1 regression loss and the GIoU loss
     """
-    # print("batch_pred: ", batch_pred)
-    # print("batch_target: ", batch_target)
 
     batch_size = batch_pred.shape[0]
     # world_size = get_world_size()
     num_boxes = batch_size
 
-    # TODO: 预测的框坐标都是xywh格式？
     loss_bbox = F.l1_loss(batch_pred, batch_target, reduction='none')
-    # torch.diag() 表示取出矩阵对角线元素为单独的 tensor
     loss_giou = 1 - torch.diag(generalized_box_iou(
         xywh2xyxy(batch_pred),
         xywh2xyxy(batch_target)
     ))
-
-    loss_contrastive = 0
 
     losses = {}
     losses['loss_bbox'] = loss_bbox.sum() / num_boxes

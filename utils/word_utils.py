@@ -68,7 +68,7 @@ class Corpus(object):
     def tokenize(self, line, max_len=20):
         # Tokenize line contents
         words = SENTENCE_SPLIT_REGEX.split(line.strip())
-        words = [w.lower() for w in words if (len(w) > 0 and w != ' ')]  ## do not include space as a token
+        words = [w.lower() for w in words if (len(w) > 0 and w != ' ')]  # do not include space as a token
 
         if words[-1] == '.':
             words = words[:-1]
@@ -79,7 +79,7 @@ class Corpus(object):
             elif len(words) < max_len:
                 words = words + [END_TOKEN] + [PAD_TOKEN] * (max_len - len(words) - 1)
 
-        tokens = len(words)  ## for end token
+        tokens = len(words)  # for end token
         ids = torch.LongTensor(tokens)
         token = 0
         for word in words:

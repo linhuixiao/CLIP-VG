@@ -15,7 +15,11 @@ from torch.utils.data import DataLoader, DistributedSampler
 import utils.misc as utils
 from models import build_model
 from datasets import build_dataset
-from engine import train_one_epoch, validate
+from engine import evaluate
+from engine import evaluate_for_filtering
+
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = '7'  # batch_size max=768，0、1在用
 
 
 def get_args_parser():
@@ -63,8 +67,7 @@ def get_args_parser():
                         help="Intermediate size of the feedforward layers in the vision-language transformer blocks")
     parser.add_argument('--vl_enc_layers', default=6, type=int,
                         help='Number of encoders in the vision-language transformer')
-    parser.add_argument('--vl_dec_layers', default=6, type=int,
-                        help='Number of decoders in the vision-language transformer')
+
     # Dataset parameters
     parser.add_argument('--data_root', type=str, default='./data/image_data/', help='path to ReferIt splits data folder')
     parser.add_argument('--split_root', type=str, default='./data/pseudo_samples/',  help='location of pre-parsed dataset info')
@@ -85,6 +88,10 @@ def get_args_parser():
     # distributed training parameters
     parser.add_argument('--world_size', default=1, type=int, help='number of distributed processes')
     parser.add_argument('--dist_url', default='env://', help='url used to set up distributed training')
+    # evalutaion options
+    parser.add_argument('--eval_set', default='test', type=str)  # 'testA', 'testB', 'val'
+    parser.add_argument('--eval_model', default='', type=str)
+
     return parser
 
 
@@ -117,135 +124,55 @@ def main(args):
     print('number of requires_grad params: ', n_parameters_grad)
     print('number of all params: ', n_parameters)
 
-    visu_cnn_param = [p for n, p in model_without_ddp.named_parameters() if (("visumodel" in n) and ("backbone" in n) and p.requires_grad)]
-    visu_tra_param = [p for n, p in model_without_ddp.named_parameters() if (("visumodel" in n) and ("backbone" not in n) and p.requires_grad)]
-    text_tra_param = [p for n, p in model_without_ddp.named_parameters() if (("textmodel" in n) and p.requires_grad)]
-    rest_param = [p for n, p in model_without_ddp.named_parameters() if (("visumodel" not in n) and ("textmodel" not in n) and p.requires_grad)]
-
-    param_list = [{"params": rest_param, "lr": args.lr},
-                  {"params": visu_cnn_param, "lr": args.lr_visu_cnn},
-                  {"params": visu_tra_param, "lr": args.lr_visu_tra},
-                  {"params": text_tra_param, "lr": args.lr_bert}]
-    # using RMSProp or AdamW
-    if args.optimizer == 'rmsprop':
-        optimizer = torch.optim.RMSprop(param_list, lr=args.lr, weight_decay=args.weight_decay)
-    elif args.optimizer == 'adamw':
-        optimizer = torch.optim.AdamW(param_list, lr=args.lr, weight_decay=args.weight_decay)
-    elif args.optimizer == 'adam':
-        optimizer = torch.optim.Adam(param_list, lr=args.lr, weight_decay=args.weight_decay)
-    elif args.optimizer == 'sgd':
-        optimizer = torch.optim.SGD(param_list, lr=args.lr, weight_decay=args.weight_decay, momentum=0.9)
-    else:
-        raise ValueError('Lr scheduler type not supportted ')
-
-    # using polynomial lr scheduler or half decay every 10 epochs or step
-    if args.lr_scheduler == 'poly':
-        lr_func = lambda epoch: (1 - epoch / args.epochs) ** args.lr_power
-        lr_scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, lr_func)
-    elif args.lr_scheduler == 'halfdecay':
-        lr_func = lambda epoch: 0.5 ** (epoch // (args.epochs // 10))
-        lr_scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, lr_func)
-    elif args.lr_scheduler == 'cosine':
-        lr_func = lambda epoch: 0.5 * (1. + math.cos(math.pi * epoch / args.epochs))
-        lr_scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, lr_func)
-    elif args.lr_scheduler == 'step':
-        lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, args.lr_drop)
-    elif args.lr_scheduler == 'exponential':
-        lr_func = lambda epoch: args.lr_exponential ** epoch
-        lr_scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, lr_func)
-    else:
-        raise ValueError('Lr scheduler type not supportted ')
-
     # build dataset
-    print('build dataset...')
-    if (args.sup_type == 'full'):
-        print("perform fullly supervised setting.")
-        dataset_train = build_dataset('train', args)
-    else:  # un
-        print("perform unsupervised setting.")
-        dataset_train = build_dataset('train_pseudo', args)
-
-    # note certain dataset does not have 'test' set: eg. 'unc': {'train', 'val', 'trainval', 'testA', 'testB'}
-    dataset_val = build_dataset('val', args)
+    dataset_test = build_dataset(args.eval_set, args)
 
     if args.distributed:
-        sampler_train = DistributedSampler(dataset_train, shuffle=True)
-        sampler_val = DistributedSampler(dataset_val, shuffle=False)
+        sampler_test = DistributedSampler(dataset_test, shuffle=False)
     else:
-        sampler_train = torch.utils.data.RandomSampler(dataset_train)
-        sampler_val = torch.utils.data.SequentialSampler(dataset_val)
+        sampler_test = torch.utils.data.SequentialSampler(dataset_test)
 
-    batch_sampler_train = torch.utils.data.BatchSampler(sampler_train, args.batch_size, drop_last=True)
-    data_loader_train = DataLoader(dataset_train, batch_sampler=batch_sampler_train,
-                                   collate_fn=utils.collate_fn, num_workers=args.num_workers)
-    data_loader_val = DataLoader(dataset_val, args.batch_size, sampler=sampler_val,
-                                 drop_last=False, collate_fn=utils.collate_fn, num_workers=args.num_workers)
+    batch_sampler_test = torch.utils.data.BatchSampler(sampler_test, args.batch_size, drop_last=False)
+    data_loader_test = DataLoader(dataset_test, args.batch_size, sampler=sampler_test,
+                                  drop_last=False, collate_fn=utils.collate_fn_filtering, num_workers=args.num_workers)
+                                  # drop_last=False, collate_fn=utils.collate_fn, num_workers=args.num_workers)
 
-    best_accu = 0
-    if args.resume:
-        checkpoint = torch.load(args.resume, map_location='cpu')
-        model_without_ddp.load_state_dict(checkpoint['model'])
-        if not args.eval and 'optimizer' in checkpoint and 'lr_scheduler' in checkpoint and 'epoch' in checkpoint:
-            optimizer.load_state_dict(checkpoint['optimizer'])
-            lr_scheduler.load_state_dict(checkpoint['lr_scheduler'])
-            args.start_epoch = checkpoint['epoch'] + 1
-        val_stats = validate(args, model, data_loader_val, device)
-        best_accu = val_stats['accu']
-        print("best_accu: {}".format(best_accu))
+    checkpoint = torch.load(args.eval_model, map_location='cpu')
+    model_without_ddp.load_state_dict(checkpoint['model'])
+    print("Current model training epoch is: ", checkpoint['epoch'])
 
-    if args.retrain:  # --retrain used for testing "retrain the model", results shows no gains for pretrained model.
-        # according to paper: SiRi：A Simple Selective Retraining Mechanism for Transformer-based VG, ECCV 2022
-        model_cache = build_model(args)
-        model_cache.to(device)
-        checkpoint = torch.load(args.retrain, map_location='cpu')
-        model_cache.load_state_dict(checkpoint['model'])
-        model_without_ddp.vl_transformer = model_cache.vl_transformer  # 这种写法可以，训练 1 个 ep acc 为 76
-
+    # output log
+    eval_model = args.eval_model
+    eval_model = eval_model.split('/')[-1].split('.')[0]
+    output_dir = Path(args.output_dir)
     if args.output_dir and utils.is_main_process():
-        with open(os.path.join(args.output_dir, "log.txt"), "a") as f:
+        with (output_dir / "eval_{}_{}_{}_log.txt".format(args.dataset, args.eval_set, eval_model)).open("a") as f:
             f.write(str(args) + "\n")
-
-    print("Start training...")
+            f.flush()
     start_time = time.time()
-    for epoch in range(args.start_epoch, args.epochs):
-        if args.distributed:
-            sampler_train.set_epoch(epoch)
-        train_stats = train_one_epoch(args, model, data_loader_train, optimizer, device, epoch, args.clip_max_norm)
-        lr_scheduler.step()
-        val_stats = validate(args, model, data_loader_val, device)
-        log_stats = {'epoch': epoch,
-                     **{f'train_{k}': v for k, v in train_stats.items()},
-                     **{f'validation_{k}': v for k, v in val_stats.items()},
-                     'n_parameters': n_parameters}
+
+    # perform evaluation
+    # accuracy = evaluate(args, model, data_loader_test, device)
+    accuracy, filtering_of_iou = evaluate_for_filtering(args, model, data_loader_test, device)
+
+    if utils.is_main_process():
+        total_time = time.time() - start_time
+        total_time_str = str(datetime.timedelta(seconds=int(total_time)))
+        print('Testing time {}'.format(total_time_str))
+        log_stats = {'test_model:': args.eval_model,
+                     '%s_set_accuracy'%args.eval_set: accuracy,
+                     }
         print(log_stats)
         if args.output_dir and utils.is_main_process():
-            with open(os.path.join(args.output_dir, "log.txt"), "a") as f:
+            with (output_dir / "eval_{}_{}_{}_log.txt".format(args.dataset, args.eval_set, eval_model)).open("a") as f:
                 f.write(json.dumps(log_stats) + "\n")
-
-        if args.output_dir:
-            checkpoint_paths = [os.path.join(args.output_dir, 'checkpoint.pth')]
-            if val_stats['accu'] > best_accu:
-                checkpoint_paths.append(os.path.join(args.output_dir, 'best_checkpoint.pth'))
-                best_accu = val_stats['accu']
-
-            for checkpoint_path in checkpoint_paths:
-                utils.save_on_master({
-                    'model': model_without_ddp.state_dict(),
-                    'optimizer': optimizer.state_dict(),
-                    'lr_scheduler': lr_scheduler.state_dict(),
-                    'epoch': epoch,
-                    'args': args,
-                    'val_accu': val_stats['accu']
-                }, checkpoint_path)
-
-    total_time = time.time() - start_time
-    total_time_str = str(datetime.timedelta(seconds=int(total_time)))
-    print('Training time {}'.format(total_time_str))
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser('CLIP-VG training script', parents=[get_args_parser()])
+    parser = argparse.ArgumentParser('CLIP-VG curriculum learning evaluation script', parents=[get_args_parser()])
     args = parser.parse_args()
     if args.output_dir:
         Path(args.output_dir).mkdir(parents=True, exist_ok=True)
+
+    print("ATTENTION: this Reliability evaluation script only support single GPU running!!!")
     main(args)

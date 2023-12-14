@@ -4,34 +4,58 @@ CLIP for Visual Grounding.
 
 This repository is the official Pytorch implementation for the paper [**CLIP-VG: Self-paced Curriculum Adapting of CLIP 
 for Visual Grounding**](https://ieeexplore.ieee.org/abstract/document/10269126). 
-(Primary Contact: [Linhui Xiao](https://github.com/linhuixiao))
+
+If you have any questions, please feel free to open an issue or contact me with emails: <xiaolinhui16@mails.ucas.ac.cn>.
 
 
 <h3 align="left">
-Links: <a href="https://ieeexplore.ieee.org/abstract/document/10269126">TMM</a>,  <a href="https://arxiv.org/abs/2305.08685">ArXiv</a>
+Links: <a href="https://ieeexplore.ieee.org/abstract/document/10269126">IEEE Transaction on Multimedia (2023)</a>,  <a href="https://arxiv.org/abs/2305.08685">ArXiv</a>
 </h3>
 
 **Please leave a <font color='orange'>STAR ⭐</font> if you like this project!**
 
 ## News
+
+- **Update on 2023/12/13: All of the code and models have been released.**
+- **Update on 2023/9/25: Our paper has been accepted by the top journal IEEE Transaction on Multimedia (2023) !**.
 - Update on 2023/05/18: Release the repository and training code.
-- Update on 2023/9/25: Our paper has been accepted by the top journal IEEE Transaction on Multimedia (2023)!.
+
+
+## Citation
+
+If you find our work helpful for your research, please consider citing the following BibTeX entry.   
+
+```bibtex
+@article{xiao2023clip,
+  title={CLIP-VG: Self-paced Curriculum Adapting of CLIP for Visual Grounding},
+  author={Xiao, Linhui and Yang, Xiaoshan and Peng, Fang and Yan, Ming and Wang, Yaowei and Xu, Changsheng},
+  journal={IEEE Transactions on Multimedia},
+  year={2023},
+  publisher={IEEE}
+}
+```
+
+## Contents
+
+1. [Introduction](#introduction)
+2. [Usage](#usage)
+3. [Results](#results)
+4. [Contacts](#contacts)
+5. [Acknowledgments](#acknowledgments)
+
 
 ## Highlight
-- **CLIP for Visual Grounding.** a state-of-the-art baseline for unsupervised and fully supervised visual grounding.
+- **CLIP for Visual Grounding.** a state-of-the-art baseline for unsupervised and fully supervised visual grounding with CLIP model.
 - **Single-source and Multi-source pseudo-language labels.** The generation and usage of multi-source pseudo-labels.
 - **Self-paced Curriculum Adapting Algorithm.** A plugin-like algorithmic idea that can be applied to any pseudo-label scenario.
 
-## Update
-- The code and models will be released soon ...
-
 
 ## TODO
-- [ ] Release model code and inference code.
-- [ ] Release unsupervised and fully supervised checkpoints.
-- [ ] Release the complete multi-source pseudo-language labels and its generation code.
-- [ ] Release the reliability measurement code.
-- [ ] Release the self-paced training code.
+- [x] Release model code and inference code.
+- [x] Release unsupervised and fully supervised checkpoints.
+- [x] Release the complete multi-source pseudo-language labels and its generation code.
+- [x] Release the reliability measurement code.
+
 
 
 
@@ -48,33 +72,261 @@ single-source and multi-source scenarios. Furthermore, our approach even outperf
 For more details. please refer to [our paper](https://arxiv.org/abs/2305.08685).
 
 ## Usage
-Instructions for datasets preparation and script to run evaluation and training will be found at [Usage Instructions](docs/Usage.md)
+### Dependencies
+- Python 3.9.10
+- PyTorch 1.9.0 + cu111 + cp39
+- Check [requirements.txt](requirements.txt) for other dependencies. 
 
-## Checkpoints
-### unsupervised setting
+Our model is easy to deploy in a variety of environments and has been successfully tested on multiple pytorch versions.
+If you are interested in the pseudo language label generation module, more detailed instructions will be found at [Usage Instructions](pseudo_label_generation_module/Usage.md)
 
+
+### Image Data Preparation
+1.You can download the images from the original source and place them in your disk folder, such as `$/path_to_image_data`:
+- MS COCO 2014 (for RefCOCO, RefCOCO+, RefCOCOg dataset) 
+- ReferItGame
+- [Flickr30K Entities](http://shannon.cs.illinois.edu/DenotationGraph/#:~:text=make%20face-,Downloads,-Please%20fill%20in)
+
+Only the image data in these datasets is used, and these image data is easily find in similar repositories of visual grounding work, such as [TransVG](https://github.com/linhuixiao/TransVG) etc. 
+Finally, the `$/path_to_image_data` folder will have the following structure:
+
+```angular2html
+|-- image_data
+   |-- Flickr30k
+      |-- flickr30k-images
+   |-- other
+      |-- images
+        |-- mscoco
+            |-- images
+                |-- train2014
+   |-- referit
+      |-- images
+```
+- ```$/path_to_image_data/image_data/Flickr30k/flickr30k-images/```: Image data for the Flickr30K dataset, please download from this [link](http://shannon.cs.illinois.edu/DenotationGraph/#:~:text=make%20face-,Downloads,-Please%20fill%20in). Fill the form and download the images.
+- ```$/path_to_image_data/image_data/other/images/```: Image data for RefCOCO/RefCOCO+/RefCOCOg, i.e., mscoco2014. 
+- ```$/path_to_image_data/image_data/referit/images/```: Image data for ReferItGame.
+
+## Text-Box Anotations / Pseudo-Labels Prepare
+The following are the pseudo-labels generated by the pseudo-language label generation module in an unsupervised setting.
+
+The single-source scenario represents a pseudo-template label derived from [Pseudo-Q](https://github.com/LeapLabTHU/Pseudo-Q). 
+Multi-source scenario include pseudo-template labels, pseudo-relation labels, and pseudo-caption labels. 
+Please refer to [pseudo-language label generation module](pseudo_label_generation_module/Usage.md) for specific details 
+on how they are generated. 
+
+Additionally, we also provide the pseudo-labels that selected through our single-source self-paced curriculum adapting (SSA) 
+and multi-source self-paced curriculum adapting (MSA) algorithms, which can be conveniently and directly used by the following researchers. 
+
+The labels in the fully supervised scenario is consistent with previous works such as [TransVG](https://github.com/linhuixiao/TransVG).
+It is worth noting that the test split in the unsupervised scenario are exactly the same as those used in the fully supervised scenario. 
+
+### Unsupervised setting
 #### Single-source scenario
+<table>
+    <tr> <!-- line 3 -->
+    <th style="text-align:center" > Datasets </th>
+    <th style="text-align:center" > RefCOCO </th>
+    <th style="text-align:center" > RefCOCO+ </th>
+    <th style="text-align:center" > RefCOCOg-g </th>
+    <th style="text-align:center" > RefCOCOg-u </th>
+    <th style="text-align:center" > ReferIt </th>
+    <th style="text-align:center" > Flickr </th>
+    </tr>
+    <tr> <!-- line 2 -->
+        <th style="text-align:center" rowspan="1"> original </th> <!-- table head -->
+        <th style="text-align:center" colspan="6"> <a href="https://drive.google.com/file/d/1G5VK8uNbAepyrQiI_DLQaN_02tYyOQq2/view?usp=drive_link">All of six datasets</a>,  36.7MB </th>  <!-- table head -->
+    </tr>
+    <tr> <!-- line 2 -->
+        <th style="text-align:center" rowspan="1"> with curriculum filtering </th> <!-- table head -->
+        <th style="text-align:center" colspan="6"> <a href="https://drive.google.com/file/d/1ekEWR-gYMMOrWPDB7R8lxZfDJbO8KGQt/view?usp=drive_link">All of six datasets</a>,  31.4MB </th>  <!-- table head -->
+    </tr>
+</table>
 
-| Dateset  | RefCOCO   | RefCOCO+  | RefCOCOg  | ReferIt   | Flickr    |
-|----------|-----------|-----------|-----------|-----------|-----------|
-| url      | [model]() | [model]() | [model]() | [model]() | [model]() |   
-| size     | -         | -         | -         | -         | -         | 
 
 #### Multi-source scenario
+<table>
+    <tr> <!-- line 3 -->
+    <th style="text-align:center" > Datasets </th>
+    <th style="text-align:center" > RefCOCO </th>
+    <th style="text-align:center" > RefCOCO+ </th>
+    <th style="text-align:center" > RefCOCOg-g </th>
+    <th style="text-align:center" > RefCOCOg-u </th>
+    <th style="text-align:center" > ReferIt </th>
+    <th style="text-align:center" > Flickr </th>
+    </tr>
+    <tr> <!-- line 2 -->
+        <th style="text-align:center" rowspan="1"> original </th> <!-- table head -->
+        <th style="text-align:center" colspan="6"> <a href="https://drive.google.com/file/d/1X9F5n7M0Zm4jhOIf1tjHj6bzMh6A1ZkE/view?usp=drive_link">All of six datasets</a>,  144.7MB </th>  <!-- table head -->
+    </tr>
+    <tr> <!-- line 2 -->
+        <th style="text-align:center" rowspan="1"> with curriculum filtering </th> <!-- table head -->
+        <th style="text-align:center" colspan="6"> <a href="https://drive.google.com/file/d/1IBReTahxkOdKW_fKvplw3PGlI8PdHPUW/view?usp=drive_link">All of six datasets</a>,  87.3MB </th>  <!-- table head -->
+    </tr>
+</table>
 
-| Dateset  | RefCOCO   | RefCOCO+  | RefCOCOg  | ReferIt   | Flickr    |
-|----------|-----------|-----------|-----------|-----------|-----------|
-| url      | [model]() | [model]() | [model]() | [model]() | [model]() |   
-| size     | -         | -         | -         | -         | -         | 
+### Fully supervised setting
+<table>
+    <tr> <!-- line 3 -->
+    <th style="text-align:center" > Datasets </th>
+    <th style="text-align:center" > RefCOCO </th>
+    <th style="text-align:center" > RefCOCO+ </th>
+    <th style="text-align:center" > RefCOCOg-g </th>
+    <th style="text-align:center" > RefCOCOg-u </th>
+    <th style="text-align:center" > ReferIt </th>
+    <th style="text-align:center" > Flickr </th>
+    </tr>
+    <tr> <!-- line 2 -->
+        <th style="text-align:center" rowspan="1"> url, size </th> <!-- table head -->
+        <th style="text-align:center" colspan="6"> <a href="https://drive.google.com/file/d/1ituKSxWU5aXsGnXePd7twv7ImJoFiATc/view?usp=drive_link">All of six datasets</a>,  89.0MB </th>  <!-- table head -->
+    </tr>
+</table>
+
+Download the above annotations to a disk directory such as `$/path_to_split`; then will have the following similar directory structure:
+
+```angular2html
+|-- /unsup_single_source/unsup_single_source_ssa/
+|-- unsup_multi_source/unsup_multi_source_msa/full_sup_data
+    ├── flickr
+    │   ├── flickr_test.pth
+    │   ├── flickr_train_pseudo.pth
+    │   └── flickr_val.pth
+    ├── gref
+    │   ├── gref_train_pseudo.pth
+    │   └── gref_val.pth
+    ├── gref_umd
+    │   ├── gref_umd_test.pth
+    │   ├── gref_umd_train_pseudo.pth
+    │   └── gref_umd_val.pth
+    ├── referit
+    │   ├── referit_test.pth
+    │   ├── referit_train_pseudo.pth
+    │   └── referit_val.pth
+    ├── unc
+    │   ├── unc_testA.pth
+    │   ├── unc_testB.pth
+    │   ├── unc_train_pseudo.pth
+    │   └── unc_val.pth
+    └── unc+
+        ├── unc+_testA.pth
+        ├── unc+_testB.pth
+        ├── unc+_train_pseudo.pth
+        └── unc+_val.pth
+    In multi-source, it have a additional train_separate directory for further research purpose. 
+        ├── train_separate
+            ├── 1_unc+_train_pseudo_template_0_5.pth
+            │── 2_unc+_train_pseudo_relation_0_5.pth
+            └── 3_unc+_train_pseudo_caption_0_5.pth
+```
+ \* The number at the end of the filename in train_separate directory represents the reliability threshold as defined in the paper.
+
+### Pre-trained Checkpoints
+
+### Unsupervised setting
+#### Single-source scenario
+<table>
+    <tr> <!-- line 3 -->
+    <th style="text-align:center" > Datasets </th>
+    <th style="text-align:center" > RefCOCO </th>
+    <th style="text-align:center" > RefCOCO+ </th>
+    <th style="text-align:center" > RefCOCOg-g </th>
+    <th style="text-align:center" > RefCOCOg-u </th>
+    <th style="text-align:center" > ReferIt </th>
+    <th style="text-align:center" > Flickr </th>
+    </tr>
+    <tr> <!-- line 2 -->
+        <th style="text-align:center" rowspan="1"> url, size </th> <!-- table head -->
+        <th style="text-align:center" colspan="6"> <a href="https://drive.google.com/file/d/14b-lc7zNniy4EEcJoBdXY9gNv2d20yxU/view?usp=drive_link">All of six models</a>,  3.0GB </th>  <!-- table head -->
+    </tr>
+</table>
+
+Note that the performance of our provided model on the refcocog-val-g dataset in the unsupervised single-source scenario is approximately higher ~2.0 
+than reported in the paper, i.e., (54.16) --> (56.46).
+
+#### Multi-source scenario
+<table>
+    <tr> <!-- line 3 -->
+    <th style="text-align:center" > Datasets </th>
+    <th style="text-align:center" > RefCOCO </th>
+    <th style="text-align:center" > RefCOCO+ </th>
+    <th style="text-align:center" > RefCOCOg-g </th>
+    <th style="text-align:center" > RefCOCOg-u </th>
+    <th style="text-align:center" > ReferIt </th>
+    <th style="text-align:center" > Flickr </th>
+    </tr>
+    <tr> <!-- line 2 -->
+        <th style="text-align:center" rowspan="1"> url, size </th> <!-- table head -->
+        <th style="text-align:center" colspan="6"> <a href="https://drive.google.com/file/d/1NU35UhAqx2YLehG5ni59rG4sWWaAaXGm/view?usp=drive_link">All of six models</a>,  3.0GB </th>  <!-- table head -->
+    </tr>
+</table>
 
 ### Fully supervised setting
 
-| Dateset  | RefCOCO   | RefCOCO+  | RefCOCOg  | ReferIt   | Flickr    |
-|----------|-----------|-----------|-----------|-----------|-----------|
-| url      | [model]() | [model]() | [model]() | [model]() | [model]() |   
-| size     | -         | -         | -         | -         | -         | 
+<table>
+    <tr> <!-- line 3 -->
+    <th style="text-align:center" > Datasets </th>
+    <th style="text-align:center" > RefCOCO </th>
+    <th style="text-align:center" > RefCOCO+ </th>
+    <th style="text-align:center" > RefCOCOg-g </th>
+    <th style="text-align:center" > RefCOCOg-u </th>
+    <th style="text-align:center" > ReferIt </th>
+    <th style="text-align:center" > Flickr </th>
+    </tr>
+    <tr> <!-- line 3 -->
+    <th style="text-align:center" > separate </th>
+    <th style="text-align:center" > <a href="https://drive.google.com/file/d/1ZyQkPDBG33FPVlyVmzcCf5wD_Ct2hLr8/view?usp=drive_link">model</a> </th>
+    <th style="text-align:center" > <a href="https://drive.google.com/file/d/18M-Mmu_TaMLKrpdxksoroe3DIeHmmguN/view?usp=drive_link">model</a> </th>
+    <th style="text-align:center" > <a href="https://drive.google.com/file/d/1E80T3nz6YETqYU8ZZImCuX76TM1OOxNp/view?usp=drive_link">model</a> </th>
+    <th style="text-align:center" > <a href="https://drive.google.com/file/d/1bR5WIwaNiu0ShgEafw10BwC3boT-bLRW/view?usp=drive_link">model</a> </th>
+    <th style="text-align:center" > <a href="https://drive.google.com/file/d/1g8U5Q-KUcGPVq1iKMyFui65lXn9Dwfws/view?usp=drive_link">model</a> </th>
+    <th style="text-align:center" > <a href="https://drive.google.com/file/d/1Zm98Bf7ulKxXsi-UhoEGkyUtF8-v-Ohp/view?usp=drive_link">model</a> </th>
+    </tr>
+    <tr> <!-- line 2 -->
+        <th style="text-align:center" rowspan="1"> url, size </th> <!-- table head -->
+        <th style="text-align:center" colspan="6"> <a href="https://drive.google.com/file/d/1vUC4swZM3ho_5olO--Y3PdKzMBW_iBJG/view?usp=drive_link">All of six models</a>,  3.0GB </th>  <!-- table head -->
+    </tr>
+</table>
+
+Note that the performance of our provided model on the refcoco+ dataset in the fully supervised setting is approximately higher ~2.0 
+than reported in the paper, i.e., (69.55, 77.33, 57.62) --> (71.08, 79.17, 59.40).
 
 
+
+### Training and Evaluation
+
+You just only need to change ```$/path_to_split```, ``` $/path_to_image_data```, ``` $/path_to_output``` to your own file directory to execute the following command.
+
+1. Training on RefCOCO with unsupervised setting.
+    ```
+    CUDA_VISIBLE_DEVICES=2,3,4,5,6,7 python -m torch.distributed.launch --nproc_per_node=6 --master_port 28887 --use_env train_clip_vg.py --num_workers 2 --epochs 110 --batch_size 64 --lr 0.00025  --lr_scheduler cosine --aug_crop --aug_scale --aug_translate      --imsize 224 --max_query_len 77 --dataset unc      --data_root $/path_to_image_data --split_root $/path_to_split      --output_dir $/path_to_output/output_v01/unc;
+    ```
+    Please refer to [train_and_eval_script/train.sh](train_and_eval_script/train_and_eval_unsup.sh) for training commands on other datasets.
+
+2. Training on RefCOCO with fully supervised setting. 
+    The only difference is an additional control flag: ```--sup_type full```
+    ```
+    CUDA_VISIBLE_DEVICES=3,4,5,6,7 python -m torch.distributed.launch --nproc_per_node=5 --master_port 28887 --use_env train_clip_vg.py --num_workers 32 --epochs 120 --batch_size 64 --lr 0.00025  --lr_scheduler cosine --aug_crop --aug_scale --aug_translate    --imsize 224 --max_query_len 77  --sup_type full --dataset unc      --data_root $/path_to_image_data --split_root $/path_to_split --output_dir $/path_to_output/output_v01/unc;
+    ```
+    Please refer to [train_and_eval_full_sup.sh](train_and_eval_script/train_and_eval_full_sup.sh) for training commands on other datasets.
+
+3. Evaluation on RefCOCO. The instructions are the same for the unsupervised and fully supervised Settings.
+    ```
+    CUDA_VISIBLE_DEVICES=2,3,4,5,6,7 python -m torch.distributed.launch --nproc_per_node=6 --master_port 28888 --use_env eval.py --num_workers 2 --batch_size 128    --dataset unc      --imsize 224 --max_query_len 77 --data_root $/path_to_image_data --split_root $/path_to_split --eval_model $/path_to_output/output_v01/unc/best_checkpoint.pth      --eval_set val    --output_dir $/path_to_output/output_v01/unc;
+    ```
+    Please refer to [train_and_eval_unsup.sh](train_and_eval_script/train_and_eval_unsup.sh) for evaluation commands on other splits or datasets.
+    
+4. We strongly recommend to use the following commands to training or testing with different datasets and splits, 
+    which will significant reduce the training workforce.
+    ```
+    bash train_and_eval_script/train_and_eval_unsup.sh   
+    bash train_and_eval_script/train_and_eval_full_sup.sh
+    ```
+
+5. Besides, if you need to merge the pseudo train splits for further research, just running the following command:
+    ```
+    python ./pseudo_label_generation_module/utils/merge_file.py $/path_to_split/unsup_multi_source/unc/train_separate unc;
+    cp $/path_to_split/full_sup_data/unc/unc_val.pth $/path_to_split/unsup_multi_source/unc/train_separate/unc/unc_val.pth
+    ```
+    Then, you can construct a new pseudo-label training split.
 
 ## Results
 
@@ -93,6 +345,16 @@ ReferIt and Flickr datasets
 <img src="docs/referit.png" alt="COCO" width="50%"></div>
 </details>
 
+<details open>
+<summary><font size="4">
+Our model also has significant energy efficiency advantages.
+</font></summary>
+<div align=center>
+<img src="docs/efficiency.jpg" alt="COCO" width="85%"></div>
+</details>
+
+
+
 ## Methods 
 <p align="center"> <img src='docs/algorithm.jpg' align="center" width="100%"> </p>
 
@@ -102,6 +364,10 @@ ReferIt and Flickr datasets
 <p align="center"> <img src='docs/sample2.jpg' align="center" width="100%"> </p>
 <p align="center"> <img src='docs/sample3.jpg' align="center" width="100%"> </p>
 
+
+## Contacts
+Email: <xiaolinhui16@mails.ucas.ac.cn>
+Any kind discussions are welcomed!
 
 ## Acknowledgement
 
@@ -113,20 +379,6 @@ Thanks [OpenAI](https://github.com/openai) for their awesome models.
 
 
 
-
-## Citation
-
-If you find our work helpful for your research, please consider citing the following BibTeX entry.   
-
-```bibtex
-@article{xiao2023clip,
-  title={CLIP-VG: Self-paced Curriculum Adapting of CLIP for Visual Grounding},
-  author={Xiao, Linhui and Yang, Xiaoshan and Peng, Fang and Yan, Ming and Wang, Yaowei and Xu, Changsheng},
-  journal={IEEE Transactions on Multimedia},
-  year={2023},
-  publisher={IEEE}
-}
-```
 
 
 

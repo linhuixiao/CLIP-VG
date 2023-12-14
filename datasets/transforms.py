@@ -11,7 +11,6 @@ from utils.box_utils import xyxy2xywh
 from utils.misc import interpolate
 
 
-# TODO: 这个文件没有任何改动
 def crop(image, box, region):
     cropped_image = F.crop(image, *region)
 
@@ -46,7 +45,6 @@ def resize_according_to_short_side(img, box, size):
     return img, box
 
 
-# object是最顶层的基类
 class Compose(object):
     def __init__(self, transforms):
         self.transforms = transforms
@@ -234,8 +232,6 @@ class RandomSelect(object):
 class ToTensor(object):
     def __call__(self, input_dict):
         img = input_dict['img']
-        # img = img.transpose((2,0,1))
-        # img = torch.from_numpy(img).float()
         img = F.to_tensor(img)
         input_dict['img'] = img
         
@@ -243,7 +239,6 @@ class ToTensor(object):
 
 
 class NormalizeAndPad(object):
-    # 此处的标准化参数是COCO数据集自带的标准参数
     def __init__(self, mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225], size=640, aug_translate=False):
         self.mean = mean
         self.std = std
@@ -258,7 +253,6 @@ class NormalizeAndPad(object):
         dw = self.size - w
         dh = self.size - h
 
-        # TODO: 在正常情况下，是一张图片补到目标尺寸大小，如果有空白，则上下、左右平方，平移增强的意思是顶部和左边要更少
         if self.aug_translate:
             top = random.randint(0, dh)
             left = random.randint(0, dw)
@@ -274,7 +268,6 @@ class NormalizeAndPad(object):
         out_img = torch.zeros((3, self.size, self.size)).float()
         out_mask = torch.ones((self.size, self.size)).int()
 
-        # TODO: 注意，此处设置 mask，默认有图片的地方为0，没有图片的地方为 1
         out_img[:, top:top+h, left:left+w] = img
         out_mask[top:top+h, left:left+w] = 0
 
@@ -287,7 +280,6 @@ class NormalizeAndPad(object):
             box[1], box[3] = box[1]+top, box[3]+top
             h, w = out_img.shape[-2:]
             box = xyxy2xywh(box)
-            # bbox 归一化，归一化之后是 xywh
             box = box / torch.tensor([w, h, w, h], dtype=torch.float32)
             input_dict['box'] = box
 

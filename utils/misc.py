@@ -296,13 +296,12 @@ def collate_fn(raw_batch):
     raw_batch = list(zip(*raw_batch))
 
     img = torch.stack(raw_batch[0])
-    img_mask = torch.tensor(np.array(raw_batch[1]))  # img_mask = torch.tensor(raw_batch[1])
-    # 在此次完成数据的 NestedTensor 拼接
+    img_mask = torch.tensor(np.array(raw_batch[1]))
     img_data = NestedTensor(img, img_mask)
-    word_id = torch.tensor(np.array(raw_batch[2]))  # word_id = torch.tensor(raw_batch[2])
-    word_mask = torch.from_numpy(np.array(raw_batch[3]))  # word_mask = torch.tensor(raw_batch[3])
+    word_id = torch.tensor(np.array(raw_batch[2]))
+    word_mask = torch.from_numpy(np.array(raw_batch[3]))
     text_data = NestedTensor(word_id, word_mask)
-    bbox = torch.tensor(np.array(raw_batch[4]))  # bbox = torch.tensor(raw_batch[4])
+    bbox = torch.tensor(np.array(raw_batch[4]))
     if len(raw_batch) == 7:
         batch = [img_data, text_data, bbox, raw_batch[5], raw_batch[6]]
     else:
@@ -314,12 +313,12 @@ def collate_fn_filtering(raw_batch):
     raw_batch = list(zip(*raw_batch))
 
     img = torch.stack(raw_batch[0])
-    img_mask = torch.tensor(np.array(raw_batch[1]))  # img_mask = torch.tensor(raw_batch[1])
+    img_mask = torch.tensor(np.array(raw_batch[1]))
     img_data = NestedTensor(img, img_mask)
-    word_id = torch.tensor(np.array(raw_batch[2]))  # word_id = torch.tensor(raw_batch[2])
-    word_mask = torch.from_numpy(np.array(raw_batch[3]))  # word_mask = torch.tensor(raw_batch[3])
+    word_id = torch.tensor(np.array(raw_batch[2]))
+    word_mask = torch.from_numpy(np.array(raw_batch[3]))
     text_data = NestedTensor(word_id, word_mask)
-    bbox = torch.tensor(np.array(raw_batch[4]))  # bbox = torch.tensor(raw_batch[4])
+    bbox = torch.tensor(np.array(raw_batch[4]))
     img_file = raw_batch[5]
     phrase = raw_batch[6]
     bbox_ori = raw_batch[7]

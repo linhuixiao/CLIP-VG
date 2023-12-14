@@ -39,7 +39,7 @@ def xywh2xyxy(x):
          (x_c + 0.5 * w), (y_c + 0.5 * h)]
     return torch.stack(b, dim=-1)
 
-# 注意，这是xyxy 转化为 cxcywh
+# xyxy to cxcywh
 def xyxy2xywh(x):
     x0, y0, x1, y1 = x.unbind(-1)
     b = [(x0 + x1) / 2.0, (y0 + y1) / 2.0,
@@ -74,9 +74,6 @@ def generalized_box_iou(boxes1, boxes2):
     """
     # degenerate boxes gives inf / nan results
     # so do an early check
-    # 此处出现bug时，可能是[nan nan nan nan]，20220908 此时出现bug，是因为clip开了梯度更新
-    # print("boxes1: ", boxes1)  # boxes1:  tensor([[0.2844, 0.3835, 0.5972, 0.7476],
-    # print("boxes2: ", boxes2)  # boxes2:  tensor([[0.2176, 0.0172, 0.6333, 0.7516],
 
     assert (boxes1[:, 2:] >= boxes1[:, :2]).all()
     assert (boxes2[:, 2:] >= boxes2[:, :2]).all()

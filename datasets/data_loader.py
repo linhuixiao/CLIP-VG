@@ -137,7 +137,6 @@ class DatasetNotFoundError(Exception):
 
 class TransVGDataset(data.Dataset):
     SUPPORTED_DATASETS = {
-        # TODO: 数据集不一样，全部多了 train_pseudo
         'referit': {'splits': ('train', 'val', 'trainval', 'test', 'train_pseudo')},
         'unc': {
             'splits': ('train', 'val', 'trainval', 'testA', 'testB', 'train_pseudo'),
@@ -159,7 +158,7 @@ class TransVGDataset(data.Dataset):
             'splits': ('train', 'val', 'test', 'train_pseudo')}
     }
 
-    """ 数据集核心处理部分 """
+    """ the core part of the dataset processing """
     def __init__(self, data_root, split_root='data', dataset='referit',
                  transform=None, return_idx=False, testmode=False,
                  split='train', max_query_len=128, prompt_template=None, lstm=False,
@@ -174,7 +173,7 @@ class TransVGDataset(data.Dataset):
         self.transform = transform
         self.testmode = testmode
         self.split = split
-        self.tokenizer = BertTokenizer.from_pretrained(bert_model, do_lower_case=True)
+        # self.tokenizer = BertTokenizer.from_pretrained(bert_model, do_lower_case=True)
         self.return_idx = return_idx
 
         assert self.transform is not None
@@ -190,7 +189,7 @@ class TransVGDataset(data.Dataset):
             self.split_dir = osp.join(self.dataset_root, 'splits')
         elif self.dataset == 'flickr':
             self.dataset_root = osp.join(self.data_root, 'Flickr30k')
-            # TODO: 这里把 flickr30k_images 改为 flickr30k-images
+            # TODO: it should be note that this needs to change flickr30k_images to flickr30k-images
             self.im_dir = osp.join(self.dataset_root, 'flickr30k-images')
         else:  ## refcoco, etc.
             self.dataset_root = osp.join(self.data_root, 'other')
@@ -198,7 +197,6 @@ class TransVGDataset(data.Dataset):
             self.split_dir = osp.join(self.dataset_root, 'splits')
 
         if not self.exists_dataset():
-            # self.process_dataset()
             print('The dataset {} is not found!'.format(osp.join(self.split_root, self.dataset)))
             print('Please download index cache to data folder: \n \
                 https://drive.google.com/open?id=1cZI562MABLtAzM6YU4WmKPFFguuVr0lZ')
@@ -223,9 +221,6 @@ class TransVGDataset(data.Dataset):
         for split in splits:
             imgset_file = '{0}_{1}.pth'.format(self.dataset, split)
             imgset_path = osp.join(dataset_path, imgset_file)
-            # print('\nimgset_path:\n', imgset_path)
-            """ imgset_path: /data_SSD1/lhxiao/pseudo-q/data/pseudo_samples/unc/unc_testA.pth """
-            # 从侧面印证了所加载的照片，只是从预先分割和设定好的 pth 包中进行加载
             self.images += torch.load(imgset_path)
 
         if self.prompt_template:
@@ -236,13 +231,12 @@ class TransVGDataset(data.Dataset):
 
     # TODO: 这句是关键
     def pull_item(self, idx):
-        if self.dataset == 'flickr':  # flickr 的数据格式
+        if self.dataset == 'flickr':
             img_file, bbox, phrase = self.images[idx]
         else:
-            img_file, _, bbox, phrase, attri = self.images[idx]  # 最原始的数据分割文件格式
+            img_file, _, bbox, phrase, attri = self.images[idx]
         ## box format: to x1y1x2y2
         bbox_ori = bbox
-        # TODO: 对于 refcoco数据集，统一将 bbox 从 xywh（横向x，纵向y） 转成 x1y1x2y2 格式
         if not (self.dataset == 'referit' or self.dataset == 'flickr'):
             bbox = np.array(bbox, dtype=int)
             bbox[2], bbox[3] = bbox[0] + bbox[2], bbox[1] + bbox[3]
@@ -284,56 +278,32 @@ class TransVGDataset(data.Dataset):
     def __len__(self):
         return len(self.images)
 
-    # TODO: 这个函数是核心
     def __getitem__(self, idx):
-        # 此时的处理是一条一条进行处理的，如下都是一维tensor，不带 batch_size
         img_file, img, phrase, bbox, bbox_ori = self.pull_item(idx)
-        # print("\n img shape: ", img.size)  #  (640, 480)
-        # print("\n img data: ", img)   # <PIL.Image.Image image mode=RGB size=640x480 at 0x7F2CCB4D8F70>
-        #       img_arr = np.asarray(img)
-        # 有数值，是HWC格式，且是0~255整数,img_arr.size= 921600, 819840, 894720 大小各不同, img_arr.shape=(640, 480, 3)各不同
-        # print("img_arr: ", img_arr.shape)
-        # print("\n bbox before transform: ", bbox)  # tensor([  4.,  87., 230., 408.]), 此时的 bbox 是属于 x1y1x2y2 的格式，一维 tensor
         phrase = phrase.lower()
         input_dict = {'img': img, 'box': bbox, 'text': phrase}
-        # print("bbox before: ", input_dict['box'])  # bbox before:  tensor([  0.,  93., 185., 419.])
-        # print("img size before: ", input_dict['img'].shape)
-        # transform 之前，各种形状都有，640 * 554， 640*394,431*640
-        # print("img size before: ", input_dict['img'])  # <PIL.Image.Image image mode=RGB size=500x375 at 0x7F9482F74580>
-        # TODO: 核心关键的一步，对图片，bbox 都做了数据增强, transform 由标准库中继承而来，直接对字典进行处理，
-        #  打印结果表明，bbox也被处理了，这一操作在dataset/transform.py 中 RandomResize(object)实现，在后续的 normalize 中也处理了bbox,
-        #  使用了 xyxy2cx_xy_wh，cx,cy 不是原来的x1y1
         input_dict = self.transform(input_dict)
-        # print("bbox after: ", input_dict['box'])  # bbox after:  tensor([0.1445, 0.5652, 0.2891, 0.5094])
-        # print("img size before: ", input_dict['img'].shape)  # torch.Size([3, 224, 224])
 
         img = input_dict['img']
-        img_mask = input_dict['mask']  # 原来 mask 在 transform 阶段已经处理好了
+        img_mask = input_dict['mask']
         bbox = input_dict['box']
         phrase = input_dict['text']
-        # print("\n img size: ", img.shape)  # torch.Size([3, 224, 224])，此时已经全部被处理了
-        # print("\n img data: ", img)  # 此时打印出来的值全是 0
-        # print("\n bbox after transform: ", bbox)  # tensor([0.8195, 0.6216, 0.3611, 0.5135]) 做了处理
 
-        if self.lstm:
-            phrase = self.tokenize_phrase(phrase)
-            word_id = phrase
-            word_mask = np.array(word_id > 0, dtype=int)
-        else:
-            ## encode phrase to bert input
-            examples = read_examples(phrase, idx)
-            features = convert_examples_to_features(
-                examples=examples, seq_length=self.query_len, tokenizer=self.tokenizer)
-            word_id = features[0].input_ids
-            word_mask = features[0].input_mask
+        # if self.lstm:
+        #     phrase = self.tokenize_phrase(phrase)
+        #     word_id = phrase
+        #     word_mask = np.array(word_id > 0, dtype=int)
+        # else:
+        #     ## encode phrase to bert input
+        #     examples = read_examples(phrase, idx)
+        #     features = convert_examples_to_features(
+        #         examples=examples, seq_length=self.query_len, tokenizer=self.tokenizer)
+        #     word_id = features[0].input_ids
+        #     word_mask = features[0].input_mask
 
-        # TODO: Modifies，此处可能写错了，此处代码为，有内容的为 1，没有内容的为 0，在 MDETR 中，是需要mask掉的为 1
-        text_token = clip.tokenize(phrase)  # 计算结果是二维数组，1*77
+        text_token = clip.tokenize(phrase)  # 1*77
         text = text_token.int()[0].tolist()
         text_mask = (text_token.clone() > 0).int()[0].tolist()
-        # text_mask = torch.tensor(text_token > 0).int()[0].numpy().tolist()
-        # print("\ntext_token: ", text_token)
-        # print('\ntext: ', text)
         """ # old code
         if self.testmode:
             return img, np.array(word_id, dtype=int), np.array(word_mask, dtype=int), \
@@ -344,12 +314,11 @@ class TransVGDataset(data.Dataset):
             return img, np.array(img_mask), np.array(word_id, dtype=int), np.array(word_mask, dtype=int), np.array(bbox, dtype=np.float32)
         """
 
-        if self.testmode:  # 默认是False
+        if self.testmode:  # default is False
             return img, np.array(text, dtype=int), np.array(text_mask, dtype=int), \
                    np.array(bbox, dtype=np.float32), np.array(ratio, dtype=np.float32), \
                    np.array(dw, dtype=np.float32), np.array(dh, dtype=np.float32), self.images[idx][0]
-        else:  # 避免7个变量
-            # print(img.shape)
+        else:
             return img, np.array(img_mask), np.array(text, dtype=int), np.array(text_mask, dtype=int), np.array(bbox, dtype=np.float32), img_file, phrase, bbox_ori
 
 
