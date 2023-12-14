@@ -8,12 +8,12 @@ The **single-source scenario** includes a pseudo-template label derived from [Ps
 which derived from [Pseudo-Q](https://github.com/LeapLabTHU/Pseudo-Q), [RelTR](https://github.com/yrcong/RelTR), [CLIPCap](https://github.com/rmokady/CLIP_prefix_caption) / [M2](https://github.com/aimagelab/meshed-memory-transformer), respectively. 
 
 
-##pseudo-template label generation
+## pseudo-template label generation
 
 the generation of pseudo-template label are detailed provided in [pseudo_template_label_generation](pseudo_template_label_generation/README.md).
 
 
-##pseudo-relation labels generation
+## pseudo-relation labels generation
 
 First, you should complete the environment preparation of the RelTR model as instructed by [RelTR README](pseudo_relation_label_generation/RelTR/README.md). 
 Simultaneously, ensure that the visual grounding image data preparation is completed and download the split subset of Pseudo-Q according to the dataset split in [Pseudo-Q README](pseudo_template_label_generation/README.md). 
@@ -23,7 +23,7 @@ Finally, run inference_gen_pseudo_relation_label.py by using following instructi
     python inference_gen_pseudo_relation_label.py
 
 
-##pseudo-caption labels generation
+## pseudo-caption labels generation
 
 the generation of pseudo-caption labels are detailed provided in [pseudo_relation_label_generation](pseudo_caption_label_generation/README.md).
 

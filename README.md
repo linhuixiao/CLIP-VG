@@ -333,7 +333,14 @@ You just only need to change ```$/path_to_split```, ``` $/path_to_image_data```,
     bash train_and_eval_script/train_and_eval_full_sup.sh
     ```
 
-5. Besides, if you need to merge the pseudo train splits for further research, just running the following command:
+5. Curriculum reliability measurement or scoring for the pseudo-language labels:
+
+    It is only needs to change ```eval.py``` to ```eval_for_reliability_distribution.py``` and rename the training pseudo labels as ```test.pth```
+    in the corresponding datasets during Evaluation:
+    ```
+    CUDA_VISIBLE_DEVICES=2,3,4,5,6,7 python -m torch.distributed.launch --nproc_per_node=6 --master_port 28888 --use_env eval_for_reliability_distribution.py --num_workers 2 --batch_size 128    --dataset unc      --imsize 224 --max_query_len 77 --data_root $/path_to_image_data --split_root $/path_to_split --eval_model $/path_to_output/output_v01/unc/best_checkpoint.pth      --eval_set val    --output_dir $/path_to_output/output_v01/unc;
+    ```
+    Besides, if you need to merge the pseudo train splits for further research, just running the following command:
     ```
     python ./pseudo_label_generation_module/utils/merge_file.py $/path_to_split/unsup_multi_source/unc/train_separate unc;
     cp $/path_to_split/full_sup_data/unc/unc_val.pth $/path_to_split/unsup_multi_source/unc/train_separate/unc/unc_val.pth
