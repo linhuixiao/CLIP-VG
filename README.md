@@ -63,7 +63,9 @@ If you find our work helpful for your research, please consider citing the follo
 
 In order to utilize vision and language pre-trained models to address the grounding problem, and reasonably take 
 advantage of pseudo-labels, we propose **CLIP-VG**, a novel method that can conduct self-paced curriculum adapting of CLIP 
-with pseudo-language labels. We propose a simple yet efficient end-to-end network architecture to realize the transfer 
+with pseudo-language labels. 
+
+We propose a simple yet efficient end-to-end network architecture to realize the transfer 
 of CLIP to the visual grounding. Based on the CLIP-based architecture, we further propose single-source and 
 multi-source curriculum adapting algorithms, which can progressively find more reliable pseudo-labels to learn an 
 optimal model, thereby achieving a balance between reliability and diversity for the pseudo-language labels. 
@@ -73,6 +75,18 @@ single-source and multi-source scenarios. Furthermore, our approach even outperf
 
 In comparison with the fully supervised SOTA model QRNet, we achieve comparable results with only **7.7%** of its 
 updated parameters, while obtaining significant speedups in both training and inference, up to **26.84×** and **7.41×**, respectively.
+
+In summary, **the contributions of this paper are four-fold**:
+
+- As far as we know, **we are the first to adapt CLIP to realize unsupervised visual grounding.** Our method can
+transfer the cross-modal learning ability of CLIP to visual grounding with only a small training cost.
+- **We first introduce the self-paced curriculum learning in unsupervised visual grounding.** Our proposed reliability measurement and single-source self-paced adapting
+can progressively enhance the CLIP-based visual grounding model by utilizing pseudo-labels in an easy-to-hard
+learning paradigm.
+- **We first propose the multi-source self-paced adapting algorithm to extend our method for accessing multiple
+sources of pseudo-labels,** which can flexibly improve the diversity of language taxonomy. 
+- We conduct extensive experiments to evaluate the effectiveness of our approach. Results show that our method
+obtains significant improvements in unsupervised setting and is also competitive in fully supervised setting.
 
 For more details, please refer to [our paper](https://arxiv.org/abs/2305.08685).
 
