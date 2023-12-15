@@ -91,7 +91,6 @@ model_path = os.path.join(save_path, 'model_wieghts.pt')
 
 # @title Model
 
-# MLP 就全是全连接层堆叠起来的
 class MLP(nn.Module):
     def __init__(self, sizes: Tuple[int, ...], bias=True, act=nn.Tanh):
         super(MLP, self).__init__()

@@ -45,3 +45,4 @@ After passing validation, use the following script instruction to pair captions 
    ```angular2html
    bash generate_caption_data_all.sh
    ```
+   The implementation pipeline for [M2](https://github.com/aimagelab/meshed-memory-transformer) is the same as above.

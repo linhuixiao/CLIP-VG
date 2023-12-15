@@ -180,7 +180,6 @@ def main(args):
         im_cp = np.array(imageio.v2.imread(im_file))  # HWC
 
         # mean-std normalize the input image (batch-size: 1)
-        # print(im_cp.shape[2])
         if im_cp.shape[-1] == 3:  # 灰度图只是二维array，如512*420
             img = transform1(im).unsqueeze(0)
         else:

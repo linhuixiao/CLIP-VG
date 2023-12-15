@@ -75,7 +75,7 @@ with open(os.path.join(bua_data_path, 'attributes_vocab.txt')) as f:
     for att in f.readlines():
         bua_attributes.append(att.split(',')[0].lower().strip())
 
-# OMP_NUM_THREADS=4 python caption_generation.py --vg_dataset_path /hdd/lhxiao/pseudo-q/data --vg_dataset unc --split_ind 0 --topn 3 --each_image_query 6;
+
 def parse_args():
     """
   Parse input arguments
@@ -437,7 +437,6 @@ def relative_spatial_location(descriptor, image_size):
 
 def process_of_descriptor(people_descriptor, clothes_descriptor, things_descriptor, image_size):
     new_clothes_descriptor = []
-    # 把字典转为列表
     for key, value in clothes_descriptor.items():
         for item in value:
             new_clothes_descriptor.append(item)
@@ -463,7 +462,7 @@ def generate_description(descriptor, image_file, pseudo_train_samples, each_imag
     """
     all_candidate = []
     # descriptor 最外层是各个bbox描述字典的列表
-    for object in descriptor:  # 遍历列表
+    for object in descriptor:
         spatial_candidate = []
         for ind in range(len(object['spatial'])):
             spatial_candidate.append(object['spatial'][ind])  # 读取空间位置关系
@@ -490,7 +489,7 @@ def generate_description(descriptor, image_file, pseudo_train_samples, each_imag
             if spatial_candidate[ind] in ['left', 'right']:
                 if object['attr'] is not None:
                     description_string = '{} {} on the {}'.format(object['attr'], object['class'], spatial_candidate[ind])
-                else:  # 加上 on the
+                else:
                     description_string = '{} on the {}'.format(object['class'], spatial_candidate[ind])
                 tmp_pseudo_train_sample = [image_file, 'useless placeholder', object['bbox'][:4],
                                            description_string, 'useless placeholder']
@@ -638,7 +637,6 @@ def generate_description(descriptor, image_file, pseudo_train_samples, each_imag
                                                    description_string, 'useless placeholder']
                         all_candidate.append(tmp_pseudo_train_sample)
 
-    # list 居然可以用 + 进行增加
     if len(all_candidate) < each_image_query:
         return descriptor, pseudo_train_samples + all_candidate
     else:
@@ -818,7 +816,6 @@ def parse_captions(nlp, image_captions):
 
     for img_cap in image_captions:
         # spacy 是工业级的NLP处理库，下述代码表示用 spacy 导入英文词汇解析库 en_core_web_sm 生成 NLP 工具对象 nlp
-
         doc = nlp(img_cap)
         head = get_head(doc)
         chunks = get_chunks(doc)
@@ -844,7 +841,7 @@ def generate_caption(people_descriptor, clothes_descriptor, things_descriptor, i
         for k in range(len(value)):
             for i in range(len(entity)):
                 for j in range(len(entity[i])):
-                    if entity[i][j] == value[k]['class']:  # 也可以用cls 代替 value[k]('class')
+                    if entity[i][j] == value[k]['class']:
                         caption_string = image_captions[i]
                         tmp_caption_sample = [image_file, 'useless placeholder', value[k]['bbox'][:4],
                                               caption_string, 'useless placeholder']
@@ -854,7 +851,7 @@ def generate_caption(people_descriptor, clothes_descriptor, things_descriptor, i
         for k in range(len(value)):
             for i in range(len(entity)):
                 for j in range(len(entity[i])):
-                    if entity[i][j] == value[k]['class']:  # 也可以用cls 代替 value[k]('class')
+                    if entity[i][j] == value[k]['class']:
                         caption_string = image_captions[i]
                         tmp_caption_sample = [image_file, 'useless placeholder', value[k]['bbox'][:4],
                                               caption_string, 'useless placeholder']
@@ -864,13 +861,12 @@ def generate_caption(people_descriptor, clothes_descriptor, things_descriptor, i
         for k in range(len(value)):
             for i in range(len(entity)):
                 for j in range(len(entity[i])):
-                    if entity[i][j] == value[k]['class']:  # 也可以用cls 代替 value[k]('class')
+                    if entity[i][j] == value[k]['class']:
                         caption_string = image_captions[i]
                         tmp_caption_sample = [image_file, 'useless placeholder', value[k]['bbox'][:4],
                                               caption_string, 'useless placeholder']
                         all_candidate.append(tmp_caption_sample)
 
-    # list 居然可以用 + 进行增加
     if len(all_candidate) < each_image_query:
         return caption_train_samples + all_candidate
     else:
@@ -894,8 +890,6 @@ if __name__ == '__main__':
 
     # detection_results -> /hdd/lhxiao/pseudo-q/data/detection_results/
     # args.out_path = '../data/pseudo_samples/{}'.format(args.vg_dataset)
-    # TODO: 改了
-    # 输出路径
     # args.out_path = '/hdd/lhxiao/pseudo-q/data/caption_gen/{}'.format(args.vg_dataset)
     args.out_path = '/hdd/lhxiao/pseudo-q/caption_gen/{}'.format(args.vg_dataset)
 
@@ -918,24 +912,20 @@ if __name__ == '__main__':
     # 加载对应图片的属性检测结果
     off_the_shelf_attr_detection_result = torch.load(args.attr_detection_file)
     pseudo_train_samples = []
-    # TODO: 新增
     count = 0
     start_time = time.time()
 
-    # TODO: +新增
     caption_train_samples = []
     # transform = T.Compose([CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32").feature_extractor,
     #     lambda x: torch.FloatTensor(x["pixel_values"][0]),])
     # dset: dataset，是一组带有[{‘image_id’：{}, image_file, captions}, ...]，同时按image_id排序好的字典列表，列表的长度是 123287
-    # 注意这里面包含了 train 和 val 的数据
-    coco_ann_dir = '/hdd/lhxiao/Xmodal-Ctx/ctx/datasets/coco_captions/annotations'
-    coco_img_dir = '/hdd/lhxiao/Xmodal-Ctx/ctx/datasets/coco_captions'
-    # coco_cap_data 大小是 123287 的字典列表，只能通过coco的image_id 来进行检索
-    # coco_cap_data = dataset.CocoImageCrops(coco_ann_dir, coco_img_dir, transform)
-    # coco_cap_data = []
-    # cap_data = []
     if args.vg_dataset in ['unc', 'unc+', 'gref', 'gref_umd']:
-        coco_cap_data = dataset.LoadCocoCaption(coco_ann_dir, coco_img_dir)
+        coco_cap_data = torch.load(os.path.join('/hdd/lhxiao/pseudo-q/caption_clip-cap_output/unc', 'unc_caption_data.pth'))
+        # coco_cap_data = torch.load(os.path.join('/hdd/lhxiao/pseudo-q/caption_clip-cap_output/unc+', 'unc+_caption_data.pth'))
+        # coco_cap_data = torch.load(os.path.join('/hdd/lhxiao/pseudo-q/caption_clip-cap_output/gref', 'gref_caption_data.pth'))
+        # coco_cap_data = torch.load(os.path.join('/hdd/lhxiao/pseudo-q/caption_clip-cap_output/gref_umd', 'gref_umd_caption_data.pth'))
+        for i in range(len(coco_cap_data)):
+            coco_cap_data[i]['image_id'] = int(coco_cap_data[i]['image_file'].split('/')[-1].split('.')[0])
     elif args.vg_dataset == 'referit':
         coco_cap_data = torch.load(os.path.join('/hdd/lhxiao/pseudo-q/caption_clip-cap_output/referit', 'referit_caption_data.pth'))
         for i in range(len(coco_cap_data)):
@@ -965,8 +955,6 @@ if __name__ == '__main__':
         image_object_detection_result = off_the_shelf_object_detection_result[args.image_file]
         # 读取对应的图片属性检测结果
         image_attr_detection_result = off_the_shelf_attr_detection_result[args.image_file]
-
-        # TODO: +新增，加载 caption 数据
         args.image_id = int(args.image_file.split('_')[-1].split('.')[0])  # 391895
 
         image_captions = get_img_captions(coco_cap_data, args.image_id)  # 这是一个长度不定的list
@@ -1012,15 +1000,10 @@ if __name__ == '__main__':
         # TODO: 5、选择置信度最高的top-n个bbox
         # descriptor = topn_conf_samples(descriptor, topn=args.topn)
         # TODO: 6、最核心的部分，对最终选择的topn个bbox，生成伪描述，按照固定模板纯手工构造，descriptor 没有任何变化, descriptor 一直在append扩大
-        # print("\ndescriptor:\n ", descriptor)
         # descriptor, pseudo_train_samples = generate_description(descriptor, args.image_file, pseudo_train_samples,
         #                                                         each_image_query=args.each_image_query)
-        # print("\n descriptor2:\n", descriptor)
-        # print("\n pseudo_train_samples:\n ", pseudo_train_samples)
 
     image_list_file = args.image_list_file
-    # output_path = os.path.join(args.out_path, 'top{}_query{}'.format(
-    #     args.topn, args.each_image_query, args.attr_iou_thresh, args.attr_conf_thresh))
     output_path = args.out_path
     if not os.path.exists(output_path):
         os.makedirs(output_path)

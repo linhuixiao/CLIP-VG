@@ -149,7 +149,7 @@ It is worth noting that the test split in the unsupervised scenario are exactly 
         <th style="text-align:center" colspan="6"> <a href="https://drive.google.com/file/d/1G5VK8uNbAepyrQiI_DLQaN_02tYyOQq2/view?usp=drive_link">All of six datasets</a>,  36.7MB </th>  <!-- table head -->
     </tr>
     <tr> <!-- line 2 -->
-        <th style="text-align:center" rowspan="1"> with curriculum filtering </th> <!-- table head -->
+        <th style="text-align:center" rowspan="1"> with curriculum selecting </th> <!-- table head -->
         <th style="text-align:center" colspan="6"> <a href="https://drive.google.com/file/d/1ekEWR-gYMMOrWPDB7R8lxZfDJbO8KGQt/view?usp=drive_link">All of six datasets</a>,  31.4MB </th>  <!-- table head -->
     </tr>
 </table>
@@ -168,11 +168,11 @@ It is worth noting that the test split in the unsupervised scenario are exactly 
     </tr>
     <tr> <!-- line 2 -->
         <th style="text-align:center" rowspan="1"> original </th> <!-- table head -->
-        <th style="text-align:center" colspan="6"> <a href="https://drive.google.com/file/d/1X9F5n7M0Zm4jhOIf1tjHj6bzMh6A1ZkE/view?usp=drive_link">All of six datasets</a>,  144.7MB </th>  <!-- table head -->
+        <th style="text-align:center" colspan="6"> <a href="https://drive.google.com/file/d/1X9F5n7M0Zm4jhOIf1tjHj6bzMh6A1ZkE/view?usp=drive_link">All of six datasets</a>,  144.7MB, each dataset contains 3 sources of pseudo-labels </th>  <!-- table head -->
     </tr>
     <tr> <!-- line 2 -->
-        <th style="text-align:center" rowspan="1"> with curriculum filtering </th> <!-- table head -->
-        <th style="text-align:center" colspan="6"> <a href="https://drive.google.com/file/d/1IBReTahxkOdKW_fKvplw3PGlI8PdHPUW/view?usp=drive_link">All of six datasets</a>,  87.3MB </th>  <!-- table head -->
+        <th style="text-align:center" rowspan="1"> with curriculum selecting </th> <!-- table head -->
+        <th style="text-align:center" colspan="6"> <a href="https://drive.google.com/file/d/1IBReTahxkOdKW_fKvplw3PGlI8PdHPUW/view?usp=drive_link">All of six datasets</a>,  87.3MB, each dataset contains 3 sources of pseudo-labels </th>  <!-- table head -->
     </tr>
 </table>
 
