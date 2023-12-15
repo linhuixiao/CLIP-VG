@@ -71,12 +71,11 @@ multi-source curriculum adapting algorithms, which can progressively find more r
 optimal model, thereby achieving a balance between reliability and diversity for the pseudo-language labels. 
 
 Our method outperforms the current state-of-the-art unsupervised method Pseudo-Q, by a significant margin on RefCOCO/+/g datasets in both 
-single-source and multi-source scenarios. Furthermore, our approach even outperforms existing weakly supervised methods.
-
+single-source and multi-source scenarios. Furthermore, our approach even outperforms existing weakly supervised methods. 
 In comparison with the fully supervised SOTA model QRNet, we achieve comparable results with only **7.7%** of its 
 updated parameters, while obtaining significant speedups in both training and inference, up to **26.84×** and **7.41×**, respectively.
 
-In summary, **the contributions of this paper are four-fold**:
+In summary, **the contributions of this work are four-fold**:
 
 - As far as we know, **we are the first to adapt CLIP to realize unsupervised visual grounding.** Our method can
 transfer the cross-modal learning ability of CLIP to visual grounding with only a small training cost.
