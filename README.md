@@ -384,18 +384,36 @@ Our model also has significant energy efficiency advantages.
 <div align=center>
 <img src="docs/efficiency.jpg" alt="COCO" width="85%"></div>
 </details>
+Compared to QRNet, we updated **only 7.7%** of its parameters and achieved impressive training and inference speedups, 
+up to **26.84×** and **7.41×**, respectively, while also obtaining competitive results. 
 
 
 
 ## Methods 
 <p align="center"> <img src='docs/algorithm.jpg' align="center" width="100%"> </p>
 
-
 ## Visualization
-<p align="center"> <img src='docs/sample1.jpg' align="center" width="100%"> </p>
-<p align="center"> <img src='docs/sample2.jpg' align="center" width="100%"> </p>
-<p align="center"> <img src='docs/sample3.jpg' align="center" width="100%"> </p>
+<p align="center"> <img src='docs/fig5.jpg' align="center" width="100%"> </p>
 
+The figure presents the histograms of Single-Source Reliability (SR) and Cross-source Reliability (CR) for pseudo-language 
+labels in the range of (0.0, 1.0] with 1000 bins, where each bin represents the number of samples. The figure illustrates 
+that different sources exhibit distinct distributions due to their specific quality and language taxonomy of pseudo-language
+labels (e.g., Fig.5-(a1)-(b2)-(c3)), while different reliability measures have varying discrimination abilities on the 
+same source (e.g., Fig.5-(a1)-(b1)-(c1)). 
+
+<p align="center"> <img src='docs/fig6.jpg' align="center" width="100%"> </p>
+Before the execution of MSA, the distribution of the pseudo-language labels and the ground-truth query labels is quite 
+different, but after the execution of MSA, the distribution discrepancy significantly becomes smaller. This shows that 
+MSA can effectively select pseudo-labels that are more reliable or closer to the distribution of ground-truth query labels.
+
+<p align="center"> <img src='docs/sample1.jpg' align="center" width="100%"> </p>
+
+<p align="center"> <img src='docs/sample2.jpg' align="center" width="100%"> </p>
+
+<p align="center"> <img src='docs/sample3.jpg' align="center" width="100%"> </p>
+Among the various types of unreliable pseudo-language labels, referring to ambiguity is more frequent, particularly in 
+images with similar classification objects. If future research aims to further enhance model performance, addressing 
+ambiguity is a critical issue.
 
 ## Contacts
 Email: <xiaolinhui16@mails.ucas.ac.cn>.
