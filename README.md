@@ -16,7 +16,7 @@ Links: <a href="https://ieeexplore.ieee.org/abstract/document/10269126">IEEE Tra
 
 ## News
 
-- **Update on 2023/12/13: All of the code and models have been released.**
+- **Update on 2023/12/13: All of the code, models and datasets have been released.**
 - **Update on 2023/9/25: Our paper has been accepted by the top journal IEEE Transaction on Multimedia (2023)!**
 - Update on 2023/05/18: Release the repository and training code.
 
