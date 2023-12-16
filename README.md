@@ -62,8 +62,8 @@ If you find our work helpful for your research, please consider citing the follo
 ## Introduction
 
 In order to utilize vision and language pre-trained models to address the grounding problem, and reasonably take 
-advantage of pseudo-labels, we propose **CLIP-VG**, a novel method that can conduct self-paced curriculum adapting of CLIP 
-with pseudo-language labels. 
+advantage of pseudo-labels, we propose **CLIP-VG**, **a novel method that can conduct self-paced curriculum adapting of CLIP 
+with pseudo-language labels.** 
 
 We propose a simple yet efficient end-to-end network architecture to realize the transfer 
 of CLIP to the visual grounding. Based on the CLIP-based architecture, we further propose single-source and 
@@ -384,9 +384,9 @@ Our model also has significant energy efficiency advantages.
 <div align=center>
 <img src="docs/efficiency.jpg" alt="COCO" width="85%"></div>
 </details>
+
 Compared to QRNet, we updated **only 7.7%** of its parameters and achieved impressive training and inference speedups, 
 up to **26.84×** and **7.41×**, respectively, while also obtaining competitive results. 
-
 
 
 ## Methods 
