@@ -204,7 +204,20 @@ It is worth noting that the test split in the unsupervised scenario are exactly 
         <th style="text-align:center" rowspan="1"> url, size </th> <!-- table head -->
         <th style="text-align:center" colspan="6"> <a href="https://drive.google.com/file/d/1ituKSxWU5aXsGnXePd7twv7ImJoFiATc/view?usp=drive_link">All of six datasets</a>,  89.0MB </th>  <!-- table head -->
     </tr>
+    <tr> <!-- line 3 -->
+    <th style="text-align:center" > with curriculum selecting </th>
+    <th style="text-align:center" > - </th>
+    <th style="text-align:center" > - </th>
+    <th style="text-align:center" > - </th>
+    <th style="text-align:center" > <a href="https://drive.google.com/file/d/1eSGr-sTqZ6z_Jy7APnJXNxegt2Q-pbqE/view?usp=drive_link">dataset</a> </th>
+    <th style="text-align:center" > - </th>
+    <th style="text-align:center" > - </th>
+    </tr>
 </table>
+
+\* Since we observed a relatively clear performance increase on the RefCOCOg-u dataset in the fully supervised setting, 
+we provide data for this dataset after applying our SSA algorithm for curriculum selecting. Typically, by using this 
+filtered data, there is an approximate ~1.0 increase in performance on both val-u and test-u.
 
 Download the above annotations to a disk directory such as `$/path_to_split`; then will have the following similar directory structure:
 
