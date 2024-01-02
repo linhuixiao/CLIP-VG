@@ -9,7 +9,9 @@ If you have any questions, please feel free to open an issue or contact me with 
 
 
 <h3 align="left">
-Links: <a href="https://ieeexplore.ieee.org/abstract/document/10269126">IEEE Transaction on Multimedia (2023)</a>,  <a href="https://arxiv.org/abs/2305.08685">ArXiv</a>
+Links: <a href="https://ieeexplore.ieee.org/abstract/document/10269126">IEEE Transaction on Multimedia (2023)</a>,   
+<a href="https://arxiv.org/abs/2305.08685">ArXiv</a>,
+[<a href="https://mp.weixin.qq.com/s/fwbamVr5P5Vcj5XheopQOg">中文解读</a>]
 </h3>
 
 **Please leave a <font color='orange'>STAR ⭐</font> if you like this project!**
