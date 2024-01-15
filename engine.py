@@ -98,7 +98,6 @@ def evaluate(args, model: torch.nn.Module, data_loader: Iterable, device: torch.
 
     pred_box_list = []
     gt_box_list = []
-    # TODO：数据处理进度条
     for _, batch in enumerate(tqdm(data_loader)):
         img_data, text_data, target = batch
         batch_size = img_data.tensors.size(0)
