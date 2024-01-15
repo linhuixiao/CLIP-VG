@@ -26,6 +26,7 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable,
     header = 'Epoch: [{}]'.format(epoch)
     print_freq = 10
 
+    # data processing
     for batch in metric_logger.log_every(data_loader, print_freq, header):
         img_data, text_data, target = batch
 
