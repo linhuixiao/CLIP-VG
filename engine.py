@@ -143,17 +143,11 @@ def evaluate_for_filtering(args, model: torch.nn.Module, data_loader: Iterable, 
 
     train_pseudo_bad_label_0_0 = []
     train_pseudo_bad_label_0_4 = []
-    train_pseudo_refine_0_0 = []
-    train_pseudo_refine_0_1 = []
-    train_pseudo_refine_0_2 = []
-    train_pseudo_refine_0_3 = []
-    train_pseudo_refine_0_4 = []
-    train_pseudo_refine_0_5 = []
-    train_pseudo_refine_0_6 = []
-    train_pseudo_refine_0_7 = []
-    train_pseudo_refine_0_8 = []
-    train_pseudo_refine_0_9 = []
-    train_pseudo_refine_1_0 = []
+
+    train_pseudo_refine = []
+    reliability = [i / 10.0 for i in range(11)]  # default delta is 0.1, the reliability interval is from 0.0 to 1.0
+    for i in reliability:
+        train_pseudo_refine.append([])
 
     for _, batch in enumerate(tqdm(data_loader)):
         img_data, text_data, target, img_file, phrase, bbox_ori = batch
@@ -181,118 +175,65 @@ def evaluate_for_filtering(args, model: torch.nn.Module, data_loader: Iterable, 
     result_tensor = torch.tensor([accu_num, total_num]).to(device)
     for i in range(len(img_file_list)):
         if not (args.dataset == 'flickr'):  # unc/+/g， bbox xywh, referit:x1y1
-            img_iou_list.append([img_file_list[i], 'useless placeholder', bbox_ori_list[i], phrase_list[i], gt_boxes[i].cpu(), pred_boxes[i].cpu(), float(iou_list[i])])
+            img_iou_list.append([img_file_list[i], 'useless placeholder', bbox_ori_list[i], phrase_list[i],
+                                 gt_boxes[i].cpu(), pred_boxes[i].cpu(), float(iou_list[i])])
             if float(iou_list[i]) == 0:
-                tmp_pseudo_label = [img_file_list[i], 'useless placeholder', bbox_ori_list[i], phrase_list[i], 'useless placeholder', float(iou_list[i])]
+                tmp_pseudo_label = [img_file_list[i], 'useless placeholder', bbox_ori_list[i], phrase_list[i],
+                                    'useless placeholder', float(iou_list[i])]
                 train_pseudo_bad_label_0_0.append(tmp_pseudo_label)
             if float(iou_list[i]) < 0.4:
-                tmp_pseudo_label = [img_file_list[i], 'useless placeholder', bbox_ori_list[i], phrase_list[i], 'useless placeholder', float(iou_list[i])]
+                tmp_pseudo_label = [img_file_list[i], 'useless placeholder', bbox_ori_list[i], phrase_list[i],
+                                    'useless placeholder', float(iou_list[i])]
                 train_pseudo_bad_label_0_4.append(tmp_pseudo_label)
-            if float(iou_list[i]) > 0.0:
-                tmp_pseudo_label = [img_file_list[i], 'useless placeholder', bbox_ori_list[i], phrase_list[i], 'useless placeholder']
-                train_pseudo_refine_0_0.append(tmp_pseudo_label)
-            if float(iou_list[i]) > 0.1:
-                tmp_pseudo_label = [img_file_list[i], 'useless placeholder', bbox_ori_list[i], phrase_list[i], 'useless placeholder']
-                train_pseudo_refine_0_1.append(tmp_pseudo_label)
-            if float(iou_list[i]) > 0.2:
-                tmp_pseudo_label = [img_file_list[i], 'useless placeholder', bbox_ori_list[i], phrase_list[i], 'useless placeholder']
-                train_pseudo_refine_0_2.append(tmp_pseudo_label)
-            if float(iou_list[i]) > 0.3:
-                tmp_pseudo_label = [img_file_list[i], 'useless placeholder', bbox_ori_list[i], phrase_list[i], 'useless placeholder']
-                train_pseudo_refine_0_3.append(tmp_pseudo_label)
-            if float(iou_list[i]) > 0.4:
-                tmp_pseudo_label = [img_file_list[i], 'useless placeholder', bbox_ori_list[i], phrase_list[i], 'useless placeholder']
-                train_pseudo_refine_0_4.append(tmp_pseudo_label)
-            if float(iou_list[i]) > 0.5:
-                tmp_pseudo_label = [img_file_list[i], 'useless placeholder', bbox_ori_list[i], phrase_list[i], 'useless placeholder']
-                train_pseudo_refine_0_5.append(tmp_pseudo_label)
-            if float(iou_list[i]) > 0.6:
-                tmp_pseudo_label = [img_file_list[i], 'useless placeholder', bbox_ori_list[i], phrase_list[i], 'useless placeholder']
-                train_pseudo_refine_0_6.append(tmp_pseudo_label)
-            if float(iou_list[i]) > 0.7:
-                tmp_pseudo_label = [img_file_list[i], 'useless placeholder', bbox_ori_list[i], phrase_list[i], 'useless placeholder']
-                train_pseudo_refine_0_7.append(tmp_pseudo_label)
-            if float(iou_list[i]) > 0.8:
-                tmp_pseudo_label = [img_file_list[i], 'useless placeholder', bbox_ori_list[i], phrase_list[i], 'useless placeholder']
-                train_pseudo_refine_0_8.append(tmp_pseudo_label)
-            if float(iou_list[i]) > 0.9:
-                tmp_pseudo_label = [img_file_list[i], 'useless placeholder', bbox_ori_list[i], phrase_list[i], 'useless placeholder']
-                train_pseudo_refine_0_9.append(tmp_pseudo_label)
+
+            for j in range(len(reliability) - 1):
+                if float(iou_list[i]) > reliability[j]:
+                    tmp_pseudo_label = [img_file_list[i], 'useless placeholder', bbox_ori_list[i], phrase_list[i],
+                                        'useless placeholder']
+                    train_pseudo_refine[j].append(tmp_pseudo_label)
             if float(iou_list[i]) == 1.0:
-                tmp_pseudo_label = [img_file_list[i], 'useless placeholder', bbox_ori_list[i], phrase_list[i], 'useless placeholder']
-                train_pseudo_refine_1_0.append(tmp_pseudo_label)
+                tmp_pseudo_label = [img_file_list[i], 'useless placeholder', bbox_ori_list[i], phrase_list[i],
+                                    'useless placeholder']
+                train_pseudo_refine[10].append(tmp_pseudo_label)
+
         else:
-            if args.dataset == 'flickr':  # tmp_sample = [sample[0], sample[2], sample[3]], ['img_file', [x1y1x2y2 bbox], 'expression']
-                img_iou_list.append([img_file_list[i], 'useless placeholder', bbox_ori_list[i], phrase_list[i], gt_boxes[i].cpu(), pred_boxes[i].cpu(), float(iou_list[i])])
+            if args.dataset == 'flickr':
+                # tmp_sample = [sample[0], sample[2], sample[3]], ['img_file', [x1y1x2y2 bbox], 'expression']
+                img_iou_list.append([img_file_list[i], 'useless placeholder', bbox_ori_list[i], phrase_list[i],
+                                     gt_boxes[i].cpu(), pred_boxes[i].cpu(), float(iou_list[i])])
                 if float(iou_list[i]) == 0:
-                    tmp_pseudo_label = [img_file_list[i], 'useless placeholder', bbox_ori_list[i], phrase_list[i], 'useless placeholder', float(iou_list[i])]
+                    tmp_pseudo_label = [img_file_list[i], 'useless placeholder', bbox_ori_list[i], phrase_list[i],
+                                        'useless placeholder', float(iou_list[i])]
                     train_pseudo_bad_label_0_0.append(tmp_pseudo_label)
                 if float(iou_list[i]) < 0.4:
-                    tmp_pseudo_label = [img_file_list[i], 'useless placeholder', bbox_ori_list[i], phrase_list[i], 'useless placeholder', float(iou_list[i])]
+                    tmp_pseudo_label = [img_file_list[i], 'useless placeholder', bbox_ori_list[i], phrase_list[i],
+                                        'useless placeholder', float(iou_list[i])]
                     train_pseudo_bad_label_0_4.append(tmp_pseudo_label)
-                if float(iou_list[i]) > 0.0:
-                    tmp_pseudo_label = [img_file_list[i], bbox_ori_list[i], phrase_list[i]]
-                    train_pseudo_refine_0_0.append(tmp_pseudo_label)
-                if float(iou_list[i]) > 0.1:
-                    tmp_pseudo_label = [img_file_list[i], bbox_ori_list[i], phrase_list[i]]
-                    train_pseudo_refine_0_1.append(tmp_pseudo_label)
-                if float(iou_list[i]) > 0.2:
-                    tmp_pseudo_label = [img_file_list[i], bbox_ori_list[i], phrase_list[i]]
-                    train_pseudo_refine_0_2.append(tmp_pseudo_label)
-                if float(iou_list[i]) > 0.3:
-                    tmp_pseudo_label = [img_file_list[i], bbox_ori_list[i], phrase_list[i]]
-                    train_pseudo_refine_0_3.append(tmp_pseudo_label)
-                if float(iou_list[i]) > 0.4:
-                    tmp_pseudo_label = [img_file_list[i], bbox_ori_list[i], phrase_list[i]]
-                    train_pseudo_refine_0_4.append(tmp_pseudo_label)
-                if float(iou_list[i]) > 0.5:
-                    tmp_pseudo_label = [img_file_list[i], bbox_ori_list[i], phrase_list[i]]
-                    train_pseudo_refine_0_5.append(tmp_pseudo_label)
-                if float(iou_list[i]) > 0.6:
-                    tmp_pseudo_label = [img_file_list[i], bbox_ori_list[i], phrase_list[i]]
-                    train_pseudo_refine_0_6.append(tmp_pseudo_label)
-                if float(iou_list[i]) > 0.7:
-                    tmp_pseudo_label = [img_file_list[i], bbox_ori_list[i], phrase_list[i]]
-                    train_pseudo_refine_0_7.append(tmp_pseudo_label)
-                if float(iou_list[i]) > 0.8:
-                    tmp_pseudo_label = [img_file_list[i], bbox_ori_list[i], phrase_list[i]]
-                    train_pseudo_refine_0_8.append(tmp_pseudo_label)
-                if float(iou_list[i]) > 0.9:
-                    tmp_pseudo_label = [img_file_list[i], bbox_ori_list[i], phrase_list[i]]
-                    train_pseudo_refine_0_9.append(tmp_pseudo_label)
+
+                for j in range(len(reliability) - 1):
+                    if float(iou_list[i]) > reliability[j]:
+                        tmp_pseudo_label = [img_file_list[i], bbox_ori_list[i], phrase_list[i]]
+                        train_pseudo_refine[j].append(tmp_pseudo_label)
                 if float(iou_list[i]) == 1.0:
                     tmp_pseudo_label = [img_file_list[i], bbox_ori_list[i], phrase_list[i]]
-                    train_pseudo_refine_1_0.append(tmp_pseudo_label)
+                    train_pseudo_refine[10].append(tmp_pseudo_label)
 
     print("img_file_list: ", len(img_file_list))
     print("iou_list: ", iou_list.size())
     print("img_iou_list size: ", len(img_iou_list))
     print("train_pseudo_bad_label_0_0 size: ", len(train_pseudo_bad_label_0_0))
     print("train_pseudo_bad_label_0_4 size: ", len(train_pseudo_bad_label_0_4))
-    print("train_pseudo_refine_0_0 size: ", len(train_pseudo_refine_0_0))
-    print("train_pseudo_refine_0_1 size: ", len(train_pseudo_refine_0_1))
-    print("train_pseudo_refine_0_2 size: ", len(train_pseudo_refine_0_2))
-    print("train_pseudo_refine_0_3 size: ", len(train_pseudo_refine_0_3))
-    print("train_pseudo_refine_0_4 size: ", len(train_pseudo_refine_0_4))
-    print("train_pseudo_refine_0_5 size: ", len(train_pseudo_refine_0_5))
-    print("train_pseudo_refine_0_6 size: ", len(train_pseudo_refine_0_6))
-    print("train_pseudo_refine_0_7 size: ", len(train_pseudo_refine_0_7))
-    print("train_pseudo_refine_0_8 size: ", len(train_pseudo_refine_0_8))
-    print("train_pseudo_refine_0_9 size: ", len(train_pseudo_refine_0_9))
-    print("train_pseudo_refine_1_0 size: ", len(train_pseudo_refine_1_0))
+    for j in range(len(reliability)):
+        print("the number of train_pseudo_refine sample when reliability > ",  str(reliability[j]), " is: ",
+              len(train_pseudo_refine[j]))
+
     torch.save(train_pseudo_bad_label_0_0, os.path.join(args.output_dir, '{}_train_pseudo_bad_label_0_0.pth'.format(args.dataset)))
     torch.save(train_pseudo_bad_label_0_4, os.path.join(args.output_dir, '{}_train_pseudo_bad_label_0_4.pth'.format(args.dataset)))
-    torch.save(train_pseudo_refine_0_0, os.path.join(args.output_dir, '{}_train_pseudo_refine_0_0.pth'.format(args.dataset)))
-    torch.save(train_pseudo_refine_0_1, os.path.join(args.output_dir, '{}_train_pseudo_refine_0_1.pth'.format(args.dataset)))
-    torch.save(train_pseudo_refine_0_2, os.path.join(args.output_dir, '{}_train_pseudo_refine_0_2.pth'.format(args.dataset)))
-    torch.save(train_pseudo_refine_0_3, os.path.join(args.output_dir, '{}_train_pseudo_refine_0_3.pth'.format(args.dataset)))
-    torch.save(train_pseudo_refine_0_4, os.path.join(args.output_dir, '{}_train_pseudo_refine_0_4.pth'.format(args.dataset)))
-    torch.save(train_pseudo_refine_0_5, os.path.join(args.output_dir, '{}_train_pseudo_refine_0_5.pth'.format(args.dataset)))
-    torch.save(train_pseudo_refine_0_6, os.path.join(args.output_dir, '{}_train_pseudo_refine_0_6.pth'.format(args.dataset)))
-    torch.save(train_pseudo_refine_0_7, os.path.join(args.output_dir, '{}_train_pseudo_refine_0_7.pth'.format(args.dataset)))
-    torch.save(train_pseudo_refine_0_8, os.path.join(args.output_dir, '{}_train_pseudo_refine_0_8.pth'.format(args.dataset)))
-    torch.save(train_pseudo_refine_0_9, os.path.join(args.output_dir, '{}_train_pseudo_refine_0_9.pth'.format(args.dataset)))
-    torch.save(train_pseudo_refine_1_0, os.path.join(args.output_dir, '{}_train_pseudo_refine_1_0.pth'.format(args.dataset)))
+
+    for j in range(len(reliability)):
+        torch.save(train_pseudo_refine[j], os.path.join(args.output_dir,
+                   '{}_train_pseudo_refine_{}.pth'.format(args.dataset, str(reliability[j]).replace(".", "_"))))
+
     torch.save(img_iou_list, os.path.join(args.output_dir, '{}_train_pseudo_iou_result.pth'.format(args.dataset)))
 
     torch.cuda.synchronize()
