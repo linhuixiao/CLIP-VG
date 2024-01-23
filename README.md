@@ -259,7 +259,7 @@ Download the above annotations to a disk directory such as `$/path_to_split`; th
 ```
  \* The number at the end of the filename in train_separate directory represents the reliability threshold as defined in the paper.
 
-### Pre-trained Checkpoints
+## Pre-trained Checkpoints
 
 ### Unsupervised setting
 #### Single-source scenario
@@ -331,9 +331,10 @@ than reported in the paper, i.e., (69.55, 77.33, 57.62) --> (71.08, 79.17, 59.40
 
 
 
-### Training and Evaluation
+## Training and Evaluation
 
 You just only need to change ```$/path_to_split```, ``` $/path_to_image_data```, ``` $/path_to_output``` to your own file directory to execute the following command.
+The first time we run the command below, it will take some time for the repository to download the CLIP model.
 
 1. Training on RefCOCO with unsupervised setting.
     ```
