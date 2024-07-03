@@ -451,5 +451,9 @@ Thanks [OpenAI](https://github.com/openai) for their awesome models.
 
 [![Star History Chart](https://api.star-history.com/svg?repos=linhuixiao/star-history&type=Date)](https://star-history.com/#linhuixiao/CLIP-VG&Date)
 
+https://star-history.com/#linhuixiao/CLIP-VG&Date
+
+
+<iframe style="width:100%;height:auto;min-width:600px;min-height:400px;" src="https://star-history.com/embed?secret=#linhuixiao/CLIP-VG&Date" frameBorder="0"></iframe>
 
 
