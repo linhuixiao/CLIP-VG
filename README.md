@@ -445,17 +445,7 @@ We also thank the great previous work including [DETR](https://github.com/facebo
 Thanks [OpenAI](https://github.com/openai) for their awesome models.
 
 
+## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=bytebase/star-history&type=Date)](https://star-history.com/#bytebase/star-history&Date)
-
-
-[![Star History Chart](https://api.star-history.com/svg?repos=linhuixiao/star-history&type=Date)](https://star-history.com/#linhuixiao/CLIP-VG&Date)
-
-https://star-history.com/#linhuixiao/CLIP-VG&Date
-
-
-<iframe style="width:100%;height:auto;min-width:600px;min-height:400px;" src="https://star-history.com/embed?secret=#linhuixiao/CLIP-VG&Date" frameBorder="0"></iframe>
-
-
-<iframe style="width:100%;height:auto;min-width:600px;min-height:400px;" src="https://star-history.com/embed?secret=Z2l0aHViX3BhdF8xMUFGTVJRUlkwcHc4RUxCSXhJOVdrX3VDVXhxeEp0bUJzNWQ1SDBQTmZTUHAzZVFCSnQ2M284VzQ0b3FTT2htR2JXT0pEU1gzNVZzSVVLcm5J#linhuixiao/CLIP-VG&Date" frameBorder="0"></iframe>
+[![Star History Chart](https://api.star-history.com/svg?repos=linhuixiao/CLIP-VG&type=Date)](https://star-history.com/#linhuixiao/CLIP-VG&Date)
 
