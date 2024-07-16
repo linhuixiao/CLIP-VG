@@ -1,12 +1,39 @@
-# CLIP-VG: Self-paced Curriculum Adapting of CLIP for Visual Grounding
+<p align="center"> <h1 align="center">CLIP-VG: Self-paced Curriculum Adapting of CLIP for Visual Grounding</h1>
+  <p align="center">
+    <b> IEEE Transaction on Multimedia, 2023 </b>
+    <br />
+    <a href="https://scholar.google.com.hk/citations?user=4rTE4ogAAAAJ&hl=zh-CN&oi=sra"><strong> Linhui Xiao </strong></a>
+    ·
+    <a href="https://yangxs.ac.cn/home"><strong>Xiaoshan Yang </strong></a>
+    ·
+    <a href="https://scholar.google.com.hk/citations?user=HBZ9plsAAAAJ&hl=zh-CN"><strong>Fang Peng </strong></a>
+    ·
+    <a href="https://scholar.google.com.hk/citations?user=uIUfGxYAAAAJ&hl=zh-CN"><strong>Ming Yan </strong></a>
+    ·
+    <a href="https://scholar.google.com.hk/citations?user=o_DllmIAAAAJ&hl=zh-CN"><strong>Yaowei Wang </strong></a>
+    ·
+    <a href="https://scholar.google.com.hk/citations?user=hI9NRDkAAAAJ&hl=zh-CN"><strong>Changsheng Xu</strong></a>
+  </p>
+
+  <p align="center">
+    <a href='https://arxiv.org/pdf/2305.08685'>
+      <img src='https://img.shields.io/badge/arXiv-PDF-green?style=flat&logo=arXiv&logoColor=green' alt='arXiv PDF'>
+    </a>
+    <a href='https://ieeexplore.ieee.org/abstract/document/10269126'>
+      <img src='https://img.shields.io/badge/IEEE TMM-blue' alt='arXiv PDF'>
+    </a>
+
+<br />
+
+
 <p align="center"> <img src='docs/model.jpg' align="center" width="70%"> </p>
-CLIP for Visual Grounding.
+
+**<p align="center"> CLIP for Unsupervised and Fully Supervised Visual Grounding.  </p>**
 
 This repository is the official Pytorch implementation for the paper [**CLIP-VG: Self-paced Curriculum Adapting of CLIP 
 for Visual Grounding**](https://ieeexplore.ieee.org/abstract/document/10269126). 
 
 If you have any questions, please feel free to open an issue or contact me with emails: <xiaolinhui16@mails.ucas.ac.cn>.
-
 
 <h3 align="left">
 Links: <a href="https://ieeexplore.ieee.org/abstract/document/10269126">IEEE Transaction on Multimedia (2023)</a>,   
@@ -18,6 +45,7 @@ Links: <a href="https://ieeexplore.ieee.org/abstract/document/10269126">IEEE Tra
 
 ## News
 
+- :fire: **Update on 2024/07/16: Our HiVG paper has been accepted by ACM MM 2024 !**
 - **Update on 2024/04/20: We release an advanced version of CLIP-VG, namely HiVG ([paper](https://arxiv.org/abs/2404.13400), [github](https://github.com/linhuixiao/HiVG)).**
 - **Update on 2023/12/13: All of the code, models and datasets have been released.**
 - **Update on 2023/9/25: Our paper has been accepted by the top journal IEEE Transaction on Multimedia (2023)!**
