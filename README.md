@@ -44,8 +44,10 @@ Links: <a href="https://ieeexplore.ieee.org/abstract/document/10269126">IEEE Tra
 **Please leave a <font color='orange'>STAR ⭐</font> if you like this project!**
 
 ## News
-
-- :fire: **Update on 2024/07/16: Our HiVG paper has been accepted by ACM MM 2024 !**
+- 
+- :fire: **Update on 2024/12/28: We conducted a survey of Visual Grounding over the past decade, entitled "Towards Visual Grounding: A Survey" ([Paper](https://arxiv.org/pdf/2412.20206), [Project](https://github.com/linhuixiao/Awesome-Visual-Grounding)), Comments are welcome !!!**
+- :fire: **Update on 2024/09/26: Our grounding work OneRef ([Paper](https://openreview.net/pdf?id=siPdcro6uD), [Code](https://github.com/linhuixiao/OneRef)) has acceptance by top conference NeurIPS 2024 in October 2024!**
+- :fire: **Update on 2024/07/16: Our grounding work HiVG ([Paper](https://openreview.net/pdf?id=NMMyGy1kKZ), [Code](https://github.com/linhuixiao/HiVG)) has acceptance by top conference ACM MM 2024 in July 2024!**
 - **Update on 2024/04/20: We release an advanced version of CLIP-VG, namely HiVG ([paper](https://arxiv.org/abs/2404.13400), [github](https://github.com/linhuixiao/HiVG)).**
 - **Update on 2023/12/13: All of the code, models and datasets have been released.**
 - **Update on 2023/9/25: Our paper has been accepted by the top journal IEEE Transaction on Multimedia (2023)!**
