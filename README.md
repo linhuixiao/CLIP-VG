@@ -45,7 +45,7 @@ Links: <a href="https://ieeexplore.ieee.org/abstract/document/10269126">IEEE Tra
 
 ## News
  
-- 🔥🔥🔥 **Our Grounding survey has been accepted by TPAMI on October 30, 2025 !!!**
+- 🔥🔥🔥 **Our Grounding survey ([TPAMI](https://doi.org/10.1109/TPAMI.2025.3630635), [Arxiv](https://arxiv.org/abs/2412.20206), [Project](https://github.com/linhuixiao/Awesome-Visual-Grounding)) has been accepted by TPAMI on October 30, 2025 !!!**
 
 - :fire: **Update on 2024/12/28: We conducted a survey of Visual Grounding over the past decade, entitled "Towards Visual Grounding: A Survey" ([Paper](https://arxiv.org/pdf/2412.20206), [Project](https://github.com/linhuixiao/Awesome-Visual-Grounding)), Comments are welcome !!!**
 - :fire: **Update on 2024/09/26: Our advanced grounding work OneRef ([Paper](https://openreview.net/pdf?id=siPdcro6uD), [Code](https://github.com/linhuixiao/OneRef)) has acceptance by top conference NeurIPS 2024 in October 2024!**
